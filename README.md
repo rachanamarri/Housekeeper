@@ -13,3 +13,4 @@ A platform that connects with the consumers and service providers. In this, user
 ### Technical Stack
 Frontend: Angular
 Backend: Golang
+Database: SQlite
