@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -20,14 +18,14 @@ func main() {
 	//creating Database using gorm(an ORM which simplifies the mapping and persistance of the models to the database)
 	db, err := gorm.Open("sqlite3", "./dbase.db")
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	defer db.Close()
 
 	db.AutoMigrate(&Seeker{})
 
 	//creating variable using gin Web Framework to handle routing and serving HTTP requests
-	r := gin.Default()
+	r := gin.New()
 
 	r.GET("/", h)
 	r.Run(":8080")
