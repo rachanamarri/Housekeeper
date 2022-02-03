@@ -6,15 +6,20 @@ import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router'; 
 import { NavbarComponent } from './navbar/navbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceComponent } from './service/service.component';
+import { ServiceviewComponent } from './serviceview/serviceview.component';
 
 const routes: Routes = [
-  
+  {path:'', component: ServiceviewComponent},
+  { path: 'service', component: ServiceComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent
+    NavbarComponent,
+    ServiceComponent,
+    ServiceviewComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,9 @@ const routes: Routes = [
     RouterModule.forRoot(routes)
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+
+  exports: [RouterModule]
   
 })
 export class AppModule { }
