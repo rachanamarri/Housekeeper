@@ -4,7 +4,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import {MatToolbarModule } from '@angular/material/toolbar'
 import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router'; 
-import { NavbarComponent } from './navbar/navbar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceComponent } from './service/service.component';
 import { ServiceviewComponent } from './serviceview/serviceview.component';
@@ -17,7 +16,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
     ServiceComponent,
     ServiceviewComponent
   ],
