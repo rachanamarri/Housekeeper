@@ -1,5 +1,11 @@
 <div class="container">
-    <div>{{test?.name}}</div>
-    <div>{{test?.description}}</div>
-    <div>{{test?.price}}</div>
+    
+    <div>
+        <h1><u>{{test?.name}}</u></h1><br><br><br>
+        <h3>{{test?.description}}</h3><br><br>
+        <button type="button" style="background-color: #DE5D83;color: beige; border-radius: 6px;"><h3>Price : USD {{test?.price}}</h3></button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button style="background-color:black;color: beige; border-radius: 6px;" (click)="getAppointment()"><h2>Book an Appointment </h2></button>
+    </div>
+
+
 </div>

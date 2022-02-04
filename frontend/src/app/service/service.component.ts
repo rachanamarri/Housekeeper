@@ -42,5 +42,9 @@ public get  test() {
   console.log(this.red);
   return Services.find(item => (item.id) == this.hey);
 }
+
+getAppointment(){
+  alert ("Appointment is Booked.")
+}
 }
  
