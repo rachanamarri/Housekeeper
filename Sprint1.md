@@ -12,4 +12,18 @@ FrontEnd
 
 6. Added mock for book appointment functionality
 
+Backend Development 
+
+  Tech Stack: Golang, SQLite3
+
+1. Database Development - Created database with tables to store Seeker, Provider, Login and Booking Details
+
+2. API Development : Routes for every different functionality
+	1. /seeker_registration : Stores the seeker related data into the database
+	2. /service_registration: Stores the provider and their service related data into the database
+	3. /seeker_login: Authenticates and authorizes login for the seeker (through email id and password
+	4. /provider_login: Authenticates and authorizes login for the provider (through email id and password)
+	5. /services: List all available services
+	6. /services/:ServiceId : To extract details of a particular service
+	7. /services/:ServiceId/book : To book a specific service appointment for a user 
 
