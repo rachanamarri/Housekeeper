@@ -10,7 +10,7 @@ import { ServiceviewComponent } from './serviceview/serviceview.component';
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
-  { path: 'service', component: ServiceComponent }
+  { path: 'service/:id', component: ServiceComponent }
 ];
 
 @NgModule({
