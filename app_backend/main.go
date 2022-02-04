@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -17,15 +18,39 @@ type Seeker struct {
 	Address  string `json:"address"`
 }
 
-type Provider struct {
-	ServiceName string `json:"serviceName"`
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-}
+// type Provider struct {
+// 	ServiceName      string `json:"ServiceName"`
+// 	ServiceId        uint   `json:"ServiceId"`
+// 	ProviderEmail    string `json:"ProviderEmail"`
+// 	ProviderPassword string `json:"ProviderPassword"`
+// }
 
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+// type Service struct {
+// 	ServiceId          uint   `json:"ServiceId"`
+// 	ProviderEmail      string `json:"ProviderEmail"`
+// 	ServiceName        string `json:"ServiceName"`
+// 	ServicePrice       int64  `json:"ServicePrice"`
+// 	ServiceDescription string `json:"ServiceDescription"`
+// }
+
+type ServiceAndProvider struct {
+	ServiceId          int64  `json:"ServiceId"`
+	ServiceName        string `json:"ServiceName"`
+	ProviderEmail      string `json:"ProviderEmail"`
+	ProviderPassword   string `json:"ProviderPassword"`
+	ServicePrice       int64  `json:"ServicePrice"`
+	ServiceDescription string `json:"ServiceDescription"`
+}
+
+type Booking struct {
+	ServiceId   int64  `json:"ServiceId"`
+	SeekerName  string `json:"SeekerName"`
+	SeekerEmail string `json:"SeekerEmail"`
 }
 
 var db *gorm.DB
@@ -41,8 +66,11 @@ func main() {
 	defer db.Close()
 
 	db.AutoMigrate(&Seeker{})
-	db.AutoMigrate(&Provider{})
+	//db.AutoMigrate(&Provider{})
 	db.AutoMigrate(&Login{})
+	//db.AutoMigrate(&Service{})
+	db.AutoMigrate(&Booking{})
+	db.AutoMigrate(&ServiceAndProvider{})
 
 	//creating variable using gin Web Framework to handle routing and serving HTTP requests
 	//r :=gin.Default() does not work, it gives a huge runtime error
@@ -50,13 +78,16 @@ func main() {
 
 	//Routers
 	r.GET("/", home)
-	r.POST("/seeker_registration", create_seeker)
-	r.POST("/provider_registration", create_provider)
-	r.POST("/seeker_login", login_auth)
-	r.POST("/provider_login", login_auth)
+	r.POST("/seeker_registration", create_seeker)   //passed commandline test
+	r.POST("/service_registration", create_service) //ids have to be auto-generated
+	r.POST("/seeker_login", login_auth)             //passed curl test
+	r.POST("/provider_login", login_auth)           //passes curl test
 	r.GET("/seeker_home", nil)
 	r.GET("/provider_home", nil)
-	r.GET("/service/:id", nil)
+	r.GET("/services", listing_services) //passed : curl http://localhost:8080/services
+	r.GET("/services/:ServiceId", list_service)
+	//When the seeker tries to book a service, the data has to be updated in the bookings table
+	r.POST("/services/:ServiceId/book", book) //no such column error
 
 	r.Run(":8080")
 }
@@ -79,20 +110,39 @@ func create_seeker(c *gin.Context) {
 
 }
 
-func create_provider(c *gin.Context) {
+func create_service(c *gin.Context) {
 
-	var provider Provider
+	//var provider Provider
 	var login Login
+	//var service Service
+	var sandp, sandp1 ServiceAndProvider
 
-	c.BindJSON(&provider)
+	c.BindJSON(&sandp)
 
-	login.Email = provider.Email
-	login.Password = provider.Password
+	count := db.Find(&sandp1)
 
-	db.Create(&provider)
+	sandp.ServiceId = count.RowsAffected + 1
+
+	// provider.ServiceName = sandp.ServiceName
+	// provider.ServiceId = sandp.ServiceId
+	// provider.ProviderEmail = sandp.ProviderEmail
+	// provider.ProviderPassword = sandp.ProviderPassword
+
+	login.Email = sandp.ProviderEmail
+	login.Password = sandp.ProviderPassword
+
+	// service.ServiceName = sandp.ServiceName
+	// service.ServicePrice = sandp.ServicePrice
+	// service.ServiceDescription = sandp.ServiceDescription
+	// service.ProviderEmail = sandp.ProviderEmail
+
+	//db.Create(&provider)
 	db.Create(&login)
+	//db.Create(&service)
+	db.Create(&sandp)
+	fmt.Println(sandp.ServiceName)
 
-	c.JSON(200, provider)
+	c.JSON(200, sandp)
 	fmt.Println("successfully added an entry into provider DB !")
 
 }
@@ -119,6 +169,47 @@ func login_auth(c *gin.Context) {
 		}
 
 	}
+
+}
+
+func listing_services(c *gin.Context) {
+
+	var services []ServiceAndProvider
+	if err := db.Find(&services).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+		c.JSON(200, services)
+	}
+
+}
+
+func list_service(c *gin.Context) {
+
+	id := c.Params.ByName("ServiceId")
+	fmt.Println(id)
+	var service ServiceAndProvider
+
+	if err := db.First(&service, "service_id = ?", id).Error; err != nil {
+		c.AbortWithStatus(404)
+		fmt.Println(err)
+	} else {
+		c.JSON(200, service)
+	}
+}
+
+func book(c *gin.Context) {
+
+	var booking Booking
+
+	id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
+	booking.ServiceId = id
+	booking.SeekerEmail = c.Params.ByName("SeekerEmail")
+	booking.SeekerName = c.Params.ByName("SeekerName")
+
+	db.Create(&booking)
+
+	c.JSON(200, booking)
 
 }
 
