@@ -8,7 +8,7 @@
 
 #### [Link for the demo video](https://drive.google.com/file/d/1v5XwKVeVptrQ6rPkIYJn17LWuMmc7mDl/view?usp=sharing)
 
-<h2>FrontEnd</h2>
+<h2>FrontEnd Development</h2>
 
 1. Created a Landing Page for the webapp.
 
