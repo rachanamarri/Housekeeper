@@ -2,9 +2,9 @@
 
 <h2> Housekeeper </h2>
 
-**Sprint-1**
+<h3>Sprint-1</h3>
 
-Sprint Window : 24 January 2022 - 3 february 2022
+<h3>Sprint Window : 24 January 2022 - 3 february 2022</h3>
 
 
 
