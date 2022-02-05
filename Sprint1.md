@@ -41,5 +41,5 @@
 	6. /services/:ServiceId : To extract details of a particular service
 	7. /services/:ServiceId/book : To book a specific service appointment for a user 
 
-<h3>The whole project is accomplished as user-stories and issues as mentioned in the github issues</h3>
+<h3>The whole project is accomplished as implementing user-stories and fixing the issues as mentioned in the github issues</h3>
 
