@@ -25,10 +25,14 @@
 <h2>Backend Development</h2> 
 
   <h3>Tech Stack: Golang, SQLite3</h3>
+  
+1. Database Development
+	a. Created the database schema using the "struct"s. Initialising the database using the GORM(ORM library in golang)
+	b. Populated the tables to store seekers, service_and_providers, logins and bookings details when the appropriate routes are hit.
 
-1. Database Development - Created database with tables to store seekers, service_and_providers, logins and bookings Details.
+2. Run the server on port :8080 using gin framework.
 
-2. API Development : Routes for every different functionality
+3. API Development : Routes for every different functionality
 	1. /seeker_registration : Stores the seeker related data into the "seekers" table and the seeker's login credentials into logins table.
 	2. /service_registration: Stores the provider and their service related data into the service_and_providers table and the provider's login credentials into 		logins table.
 	3. /seeker_login: Authenticates and authorizes login for the seeker (through email id and password
@@ -36,4 +40,6 @@
 	5. /services: List all available services
 	6. /services/:ServiceId : To extract details of a particular service
 	7. /services/:ServiceId/book : To book a specific service appointment for a user 
+
+<h3>The whole project is accomplished as user-stories and issues as mentioned in the github issues</h3>
 
