@@ -8,7 +8,7 @@
 
 #### [Link for the demo video](https://drive.google.com/file/d/1v5XwKVeVptrQ6rPkIYJn17LWuMmc7mDl/view?usp=sharing)
 
-FrontEnd
+<h2>FrontEnd</h2>
 
 1. Created a Landing Page for the webapp.
 
@@ -22,15 +22,15 @@ FrontEnd
 
 6. Added mock for book appointment functionality
 
-Backend Development 
+<h2>Backend Development</h2> 
 
-  Tech Stack: Golang, SQLite3
+  <h3>Tech Stack: Golang, SQLite3</h3>
 
-1. Database Development - Created database with tables to store Seeker, Provider, Login and Booking Details
+1. Database Development - Created database with tables to store seekers, service_and_providers, logins and bookings Details.
 
 2. API Development : Routes for every different functionality
-	1. /seeker_registration : Stores the seeker related data into the database
-	2. /service_registration: Stores the provider and their service related data into the database
+	1. /seeker_registration : Stores the seeker related data into the "seekers" table and the seeker's login credentials into logins table.
+	2. /service_registration: Stores the provider and their service related data into the service_and_providers table and the provider's login credentials into 		logins table.
 	3. /seeker_login: Authenticates and authorizes login for the seeker (through email id and password
 	4. /provider_login: Authenticates and authorizes login for the provider (through email id and password)
 	5. /services: List all available services
