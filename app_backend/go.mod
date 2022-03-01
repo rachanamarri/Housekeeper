@@ -1,11 +1,10 @@
-module web_app
+module app_backend
 
 go 1.17
 
 require (
 	github.com/gin-gonic/gin v1.7.7
 	github.com/jinzhu/gorm v1.9.16
-	github.com/satori/go.uuid v1.2.0
 )
 
 require (
@@ -26,3 +25,11 @@ require (
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
+
+require(
+	controllers v0.0.0
+	model v0.0.0
+)
+
+replace model v0.0.0 => ./model/
+replace controllers v0.0.0 => ./controllers/
