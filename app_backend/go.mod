@@ -8,6 +8,7 @@ require (
 )
 
 require (
+	controllers v0.0.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
@@ -24,12 +25,9 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
 	golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
-)
-
-require(
-	controllers v0.0.0
-	model v0.0.0
+	model v0.0.0 // indirect
 )
 
 replace model v0.0.0 => ./model/
+
 replace controllers v0.0.0 => ./controllers/
