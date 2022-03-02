@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -18,25 +20,21 @@ type Seeker struct {
 	Address  string `json:"address"`
 }
 
-// type Provider struct {
-// 	ServiceName      string `json:"ServiceName"`
-// 	ServiceId        uint   `json:"ServiceId"`
-// 	ProviderEmail    string `json:"ProviderEmail"`
-// 	ProviderPassword string `json:"ProviderPassword"`
+const (
+	DefaultKey  = "github.com/gin-contrib/sessions"
+	errorFormat = "[sessions] ERROR! %s\n"
+)
+
+// type Session struct {
+// 	UUID   string `json:"UUID"`
+// 	UserId int64  `json: "SUserId"`
 // }
 
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	UserId   int64  `json:"UserId"`
 }
-
-// type Service struct {
-// 	ServiceId          uint   `json:"ServiceId"`
-// 	ProviderEmail      string `json:"ProviderEmail"`
-// 	ServiceName        string `json:"ServiceName"`
-// 	ServicePrice       int64  `json:"ServicePrice"`
-// 	ServiceDescription string `json:"ServiceDescription"`
-// }
 
 type ServiceAndProvider struct {
 	ServiceId          int64  `json:"ServiceId"`
@@ -59,14 +57,14 @@ var err error
 func main() {
 
 	//creating Database using gorm(an ORM which simplifies the mapping and persistance of the models to the database)
-	db, err = gorm.Open("sqlite3", "./dbase.db")
+	db, err = gorm.Open("sqlite3", "./backend.db")
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 
 	db.AutoMigrate(&Seeker{})
-	//db.AutoMigrate(&Provider{})
+	// db.AutoMigrate(&Session{})
 	db.AutoMigrate(&Login{})
 	//db.AutoMigrate(&Service{})
 	db.AutoMigrate(&Booking{})
@@ -89,18 +87,39 @@ func main() {
 	//When the seeker tries to book a service, the data has to be updated in the bookings table
 	r.POST("/services/:ServiceId/book", book) //no such column error
 
+	var store = cookie.NewStore([]byte("something-very-secret"))
+	//Using middleware, store is the storage engine created before and can be replaced by other engines
+	//mysession is the name that will be stored in the cookie on the browser. The server uses this name to find the corresponding session
+	r.Use(sessions.Sessions("mysession", store))
+	fmt.Println(store)
+
+	r.GET("/hello", func(c *gin.Context) {
+		session := sessions.Default(c)
+
+		if session.Get("hello") != "world" {
+			session.Set("hello", "world")
+			session.Save()
+		}
+
+		c.JSON(200, gin.H{"hello": session.Get("hello")})
+	})
+
 	r.Run(":8080")
 }
 
 func create_seeker(c *gin.Context) {
-
+	fmt.Println("reached here")
 	var seeker Seeker
-	var login Login
-
+	fmt.Println("reached 1")
+	var login, login_dummy Login
+	fmt.Println("reached 2")
 	c.BindJSON(&seeker)
-
+	fmt.Println("reached 3")
+	count := db.Find(&login_dummy)
+	fmt.Println("reached 4")
 	login.Email = seeker.Email
 	login.Password = seeker.Password
+	login.UserId = count.RowsAffected + 1
 
 	db.Create(&seeker)
 	db.Create(&login)
@@ -123,18 +142,8 @@ func create_service(c *gin.Context) {
 
 	sandp.ServiceId = count.RowsAffected + 1
 
-	// provider.ServiceName = sandp.ServiceName
-	// provider.ServiceId = sandp.ServiceId
-	// provider.ProviderEmail = sandp.ProviderEmail
-	// provider.ProviderPassword = sandp.ProviderPassword
-
 	login.Email = sandp.ProviderEmail
 	login.Password = sandp.ProviderPassword
-
-	// service.ServiceName = sandp.ServiceName
-	// service.ServicePrice = sandp.ServicePrice
-	// service.ServiceDescription = sandp.ServiceDescription
-	// service.ProviderEmail = sandp.ProviderEmail
 
 	//db.Create(&provider)
 	db.Create(&login)
@@ -148,12 +157,15 @@ func create_service(c *gin.Context) {
 }
 
 func login_auth(c *gin.Context) {
-
+	fmt.Println("reached 5")
 	var auth Login
 	var storedAuth Login
-
+	fmt.Println("reached 6")
 	c.BindJSON(&auth)
-
+	fmt.Println("reached 7")
+	result := authenticateSession(c)
+	fmt.Println("reached 8")
+	fmt.Println(result)
 	err := db.Where("Email = ?", auth.Email).First(&storedAuth).Error
 	if err != nil {
 		c.AbortWithStatus(404)
@@ -162,6 +174,7 @@ func login_auth(c *gin.Context) {
 		match := strings.Compare(auth.Password, storedAuth.Password)
 		if match == 0 {
 			fmt.Println("match")
+
 			c.JSON(200, gin.H{"message": "login successful!"})
 		} else {
 			fmt.Println("No match")
@@ -210,6 +223,31 @@ func book(c *gin.Context) {
 	db.Create(&booking)
 
 	c.JSON(200, booking)
+
+}
+
+func authenticateSession(c *gin.Context) (response string) {
+	fmt.Println("reached 9")
+	session := sessions.Default(c)
+	fmt.Println("reached 10")
+	var login Login
+	c.BindJSON(&login)
+	fmt.Println("reached 11")
+	var res = "Unauthenticated"
+	if session.Get("hello") != nil {
+		if session.Get("hello") != login.UserId {
+			c.AbortWithStatus(404)
+			res = "Name did not match"
+			return res
+		} else {
+			c.JSON(200, gin.H{"hello": session.Get("hello")})
+		}
+	} else {
+		session.Set("hello", login.UserId)
+		session.Save()
+	}
+
+	return res
 
 }
 
