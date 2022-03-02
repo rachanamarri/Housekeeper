@@ -1,16 +1,20 @@
 # Housekeeper
 
-### Project Idea
+## Project Idea
 
 A platform that connects with the consumers and service providers. In this, users can search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online.
 
-### Team Members
+## Team Members
 1. Yasaswini Valisetty
 2. Rachana Reddy
 3. Nitheesha Reddy Beereddy
 4. Mitali Sheth
 
-### Technical Stack
+## User Roles with respective functionality
+### Service Provider
+### Service Seeker
+
+## Technical Stack
 Frontend: Angular
 Backend: Golang
 Database: SQlite
