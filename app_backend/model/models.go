@@ -1,5 +1,7 @@
 package model
 
+import "github.com/markphelps/flipt/storage/sql/common"
+
 type Seeker struct {
 	Name     string `json:"Name"`
 	Email    string `json:"Email"`
@@ -25,4 +27,8 @@ type Booking struct {
 	ServiceId   int64  `json:"ServiceId"`
 	SeekerName  string `json:"SeekerName"`
 	SeekerEmail string `json:"SeekerEmail"`
+}
+
+type Store struct {
+	*common.Store
 }

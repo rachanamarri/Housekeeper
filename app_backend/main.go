@@ -1,9 +1,10 @@
 package main
 
 import (
+	"app_backend/controllers"
 	s "app_backend/controllers"
+	"app_backend/middleware"
 	m "app_backend/model"
-	"fmt"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -45,22 +46,39 @@ func main() {
 	//When the seeker tries to book a service, the data has to be updated in the bookings table
 	r.POST("/services/:ServiceId/book", s.Book(db))
 
-	var store = cookie.NewStore([]byte("something-very-secret"))
+	var store = cookie.NewStore([]byte(controllers.RandToken(64)))
 	//Using middleware, store is the storage engine created before and can be replaced by other engines
 	//mysession is the name that will be stored in the cookie on the browser. The server uses this name to find the corresponding session
+	// store.Options(sessions.Options{
+	// 	Path:   "/",
+	// 	MaxAge: 86400 * 7,
+	// })
 	r.Use(sessions.Sessions("mysession", store))
-	fmt.Println(store)
 
-	r.GET("/hello", func(c *gin.Context) {
+	auth := r.Group("/auth")
+	auth.Use(middleware.Authentication())
+	{
+		auth.GET("/test", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "Everything is ok",
+			})
+		})
+	}
+	r.POST("/login", s.Login)
+	r.GET("/logout", s.Logout)
+	r.GET("/incr", func(c *gin.Context) {
 		session := sessions.Default(c)
-
-		if session.Get("hello") != "world" {
-			session.Set("hello", "world")
-			session.Save()
+		var count int
+		v := session.Get("count")
+		if v == nil {
+			count = 0
+		} else {
+			count = v.(int)
+			count++
 		}
-
-		c.JSON(200, gin.H{"hello": session.Get("hello")})
+		session.Set("count", count)
+		session.Save()
+		c.JSON(200, gin.H{"count": count})
 	})
-
 	r.Run(":8080")
 }

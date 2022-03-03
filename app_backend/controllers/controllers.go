@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -8,9 +10,34 @@ import (
 
 	m "app_backend/model"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
+
+func RandToken(l int) string {
+	b := make([]byte, l)
+	rand.Read(b)
+	return base64.StdEncoding.EncodeToString(b)
+}
+
+func Login(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Set("id", 12090292)
+	session.Set("email", "test@gmail.com")
+	session.Save()
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User Sign In successfully",
+	})
+}
+func Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User Sign out successfully",
+	})
+}
 
 func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
@@ -78,6 +105,10 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 			match := strings.Compare(auth.Password, storedAuth.Password)
 			if match == 0 {
 				fmt.Println("match")
+				session := sessions.Default(c)
+				session.Set("id", 12090292)
+				session.Set("email", "test@gmail.com")
+				session.Save()
 				c.JSON(200, gin.H{"message": "login successful!"})
 			} else {
 				fmt.Println("No match")
