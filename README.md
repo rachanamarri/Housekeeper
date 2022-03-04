@@ -2,7 +2,7 @@
 
 ### Project Idea
 
-A platform that connects with the consumers and service providers. In this, users can search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online.
+A platform that connects with the consumers and service providers. With this the users will be able to search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online.
 
 ### Team Members
 1. Yasaswini Valisetty
