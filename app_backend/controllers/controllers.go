@@ -53,7 +53,7 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 		db.Create(&seeker)
 		db.Create(&login)
 
-		c.JSON(http.StatusOK, gin.H{"message": "working !!"})
+		c.JSON(http.StatusOK, seeker)
 		fmt.Println("successfully added an entry into seeker DB !")
 	}
 
@@ -72,7 +72,7 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 		count := db.Find(&sandp1)
 
 		sandp.ServiceId = count.RowsAffected + 1
-
+		fmt.Println(sandp.ProviderEmail, sandp.ProviderPassword)
 		login.Email = sandp.ProviderEmail
 		login.Password = sandp.ProviderPassword
 
@@ -81,7 +81,7 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 		db.Create(&sandp)
 		fmt.Println(sandp.ServiceName)
 
-		c.JSON(200, sandp)
+		c.JSON(http.StatusOK, sandp)
 		fmt.Println("successfully added an entry into provider DB !")
 	}
 
@@ -91,12 +91,9 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 
 func Login_auth(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
-
 		var auth m.Login
 		var storedAuth m.Login
-
 		c.BindJSON(&auth)
-
 		err := db.Where("Email = ?", auth.Email).First(&storedAuth).Error
 		if err != nil {
 			c.AbortWithStatus(404)
@@ -104,12 +101,14 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 		} else {
 			match := strings.Compare(auth.Password, storedAuth.Password)
 			if match == 0 {
-				fmt.Println("match")
-				session := sessions.Default(c)
-				session.Set("id", 12090292)
-				session.Set("email", "test@gmail.com")
-				session.Save()
-				c.JSON(200, gin.H{"message": "login successful!"})
+				// fmt.Println("Reached here 6")
+				// fmt.Println("match")
+				// session := sessions.Default(c)
+				// session.Set("id", 12090292)
+				// session.Set("email", "test@gmail.com")
+				// session.Save()
+				c.JSON(http.StatusOK, storedAuth)
+				fmt.Println("successfully logged in !")
 			} else {
 				fmt.Println("No match")
 				c.JSON(401, gin.H{"message": "Login Failed!"})
@@ -144,7 +143,7 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 		fmt.Println(id)
 		var service m.ServiceAndProvider
 
-		if err := db.First(&service, "service_id = ?", id).Error; err != nil {
+		if err := db.First(&service, "ServiceId = ?", id).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {

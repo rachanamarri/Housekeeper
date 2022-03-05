@@ -10,6 +10,8 @@ require (
 	github.com/markphelps/flipt v1.6.3
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/stretchr/testify v1.7.0
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	gotest.tools v2.2.0+incompatible
 )
