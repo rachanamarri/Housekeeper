@@ -9,6 +9,7 @@ import { ServiceComponent } from './service/service.component';
 import { ServiceviewComponent } from './serviceview/serviceview.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
+import { AboutusComponent } from './aboutus/aboutus.component';
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
     AppComponent,
     ServiceComponent,
     ServiceviewComponent,
-    LoginComponent
+    LoginComponent,
+    AboutusComponent
   ],
   imports: [
     BrowserModule,
