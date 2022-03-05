@@ -5,8 +5,11 @@
 
 ## FrontEnd Development
 **1. created and implemented cypress test case for landing page.**
+
 **2. created and implemented a cypress test for checking reusable componenet service**
+
 **3. created and implemented a cypress test for booking an appointment sevice**
+
 **4. created the about us(contact) page.**
 
 
