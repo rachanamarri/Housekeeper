@@ -3,11 +3,13 @@ CEN5035 - Software Engineering Graduate Level Course Project
 
 ## Project Idea
 
-A platform that connects with the consumers and service providers. In this, users can hire professionals for almost all at-home services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online.
 
-## Team Members
-1. Yasaswini Valisetty
-2. Rachana Reddy
+Housekeeper is a platform that connects the consumers with the service providers. With this the users will be able to search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online. 
+
+### Team Members
+1. Yasaswini Valisetty 
+2. Rachana Reddy Marri
+
 3. Nitheesha Reddy Beereddy
 4. Mitali Sheth
 
@@ -43,3 +45,10 @@ A platform that connects with the consumers and service providers. In this, user
 Frontend: Angular 2+
 Backend: Golang
 Database: SQlite
+
+### Front end
+Yasaswini Valisetty, Rachana Reddy Marri
+
+### Back end
+Nitheesha Reddy Beereddy, Mitali Sheth
+
