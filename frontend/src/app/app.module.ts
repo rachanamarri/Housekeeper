@@ -7,24 +7,31 @@ import { Routes, RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceComponent } from './service/service.component';
 import { ServiceviewComponent } from './serviceview/serviceview.component';
+import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
-  { path: 'service/:id', component: ServiceComponent }
+  {path: 'service/:id', component: ServiceComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     ServiceComponent,
-    ServiceviewComponent
+    ServiceviewComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MatSliderModule,
     MatToolbarModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    FormsModule,
+    
+    
   ],
   providers: [],
   bootstrap: [AppComponent],

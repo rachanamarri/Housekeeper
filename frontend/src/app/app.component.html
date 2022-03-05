@@ -5,9 +5,12 @@
   <div>
   <span>Home</span>
   <span>About Us</span>
-  <span>View Our Services</span>
+  <span> View Our Services</span>
   <span>Become a Service Provider</span>
-  <span style="border-style: solid; border-color:orangered; border-radius: 10px; padding-left: 5px">Login</span>
+  <span >
+    <a routerLink="login" style="text-decoration: none;"> 
+      <button style="border-style: solid; border-color:orangered; border-radius: 10px; padding-left: 5px">Login</button></a>
+  </span>
   <span class="material-icons">
     shopping_cart
     </span>
@@ -17,3 +20,14 @@
 <router-outlet></router-outlet>
 
 
+<script>
+  // Get the modal
+  var modal = document.getElementById('id01');
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+  </script>
