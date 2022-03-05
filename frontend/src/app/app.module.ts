@@ -10,6 +10,8 @@ import { ServiceviewComponent } from './serviceview/serviceview.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { AboutusComponent } from './aboutus/aboutus.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
@@ -32,6 +34,7 @@ const routes: Routes = [
     MatToolbarModule,
     RouterModule.forRoot(routes),
     FormsModule,
+    HttpClientModule,
     
     
   ],
