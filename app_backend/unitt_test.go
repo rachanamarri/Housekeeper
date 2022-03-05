@@ -49,10 +49,10 @@ func TestHomePage(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, exists := response["message"]
+	msg := response["message"]
 
-	fmt.Println("...")
+	fmt.Println("msg")
 
-	assert.Equal(t, exists, true)
+	assert.Equal(t, msg, "Home Page")
 
 }
