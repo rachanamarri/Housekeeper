@@ -1,10 +1,12 @@
 module app_backend
 
-go 1.17
+go 1.13
 
 require (
+	github.com/gin-contrib/sessions v0.0.4
 	github.com/gin-gonic/gin v1.7.7
 	github.com/jinzhu/gorm v1.9.16
+
 	github.com/stretchr/testify v1.7.0
 )
 
@@ -29,3 +31,4 @@ require (
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
+

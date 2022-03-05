@@ -1,3 +1,5 @@
+/* Creating Components*/
+
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 
@@ -9,6 +11,8 @@ describe('AppComponent', () => {
       ],
     }).compileComponents();
   });
+
+/* Components characteristics*/
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -29,3 +33,4 @@ describe('AppComponent', () => {
     expect(compiled.querySelector('.content span')?.textContent).toContain('frontend app is running!');
   });
 });
+
