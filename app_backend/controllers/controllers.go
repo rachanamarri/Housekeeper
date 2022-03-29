@@ -13,12 +13,23 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RandToken(l int) string {
 	b := make([]byte, l)
 	rand.Read(b)
 	return base64.StdEncoding.EncodeToString(b)
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func Login(c *gin.Context) {
@@ -48,7 +59,14 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 		c.BindJSON(&seeker)
 
 		login.Email = seeker.Email
-		login.Password = seeker.Password
+		hashPassword, err := HashPassword(seeker.Password)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+			fmt.Println("Hash_Password ", hashPassword)
+		}
 
 		db.Create(&seeker)
 		db.Create(&login)
@@ -74,7 +92,13 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 		sandp.ServiceId = count.RowsAffected + 1
 		fmt.Println(sandp.ProviderEmail, sandp.ProviderPassword)
 		login.Email = sandp.ProviderEmail
-		login.Password = sandp.ProviderPassword
+		hashPassword, err := HashPassword(sandp.ProviderPassword)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+		}
 
 		db.Create(&login)
 
