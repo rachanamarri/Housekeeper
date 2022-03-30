@@ -148,6 +148,7 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 			fmt.Println(err)
 		} else {
 			c.JSON(200, service)
+			//fix it : sensitive info like password sould not be displayed on the browser
 		}
 	}
 
@@ -171,6 +172,19 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 
 	return gin.HandlerFunc(fn)
 
+}
+
+func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+
+		var snp m.ServiceAndProvider
+		var rtngs m.Ratings
+
+		id := c.Params.ByName("ServiceId")
+		fmt.Println(id)
+
+	}
+	return gin.HandlerFunc(fn)
 }
 
 func Home(db *gorm.DB) gin.HandlerFunc {
