@@ -6,19 +6,29 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	m "app_backend/model"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RandToken(l int) string {
 	b := make([]byte, l)
 	rand.Read(b)
 	return base64.StdEncoding.EncodeToString(b)
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func Login(c *gin.Context) {
@@ -44,11 +54,18 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 
 		var seeker m.Seeker
 		var login m.Login
-
+		fmt.Println(c)
 		c.BindJSON(&seeker)
 
 		login.Email = seeker.Email
-		login.Password = seeker.Password
+		hashPassword, err := HashPassword(seeker.Password)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+			fmt.Println("Hash_Password ", hashPassword)
+		}
 
 		db.Create(&seeker)
 		db.Create(&login)
@@ -72,14 +89,20 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 		count := db.Find(&sandp1)
 
 		sandp.ServiceId = count.RowsAffected + 1
-		fmt.Println(sandp.ProviderEmail, sandp.ProviderPassword)
+
 		login.Email = sandp.ProviderEmail
-		login.Password = sandp.ProviderPassword
+		hashPassword, err := HashPassword(sandp.ProviderPassword)
+		fmt.Println("Here I am", hashPassword)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+		}
 
 		db.Create(&login)
 
 		db.Create(&sandp)
-		fmt.Println(sandp.ServiceName)
 
 		c.JSON(http.StatusOK, sandp)
 		fmt.Println("successfully added an entry into provider DB !")
@@ -99,19 +122,17 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
-			match := strings.Compare(auth.Password, storedAuth.Password)
-			if match == 0 {
-				// fmt.Println("Reached here 6")
-				// fmt.Println("match")
-				// session := sessions.Default(c)
-				// session.Set("id", 12090292)
-				// session.Set("email", "test@gmail.com")
-				// session.Save()
-				c.JSON(http.StatusOK, storedAuth)
-				fmt.Println("successfully logged in !")
-			} else {
+			fmt.Println("Passwords are", auth.Password, storedAuth.Password)
+			err := bcrypt.CompareHashAndPassword([]byte(storedAuth.Password), []byte(auth.Password))
+			if err != nil {
+				fmt.Println(err)
 				fmt.Println("No match")
 				c.JSON(401, gin.H{"message": "Login Failed!"})
+
+			} else {
+				c.JSON(http.StatusOK, storedAuth)
+				fmt.Println("successfully logged in !")
+
 			}
 
 		}
