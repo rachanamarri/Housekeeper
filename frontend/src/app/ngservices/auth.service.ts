@@ -14,16 +14,17 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post(AUTH_API + 'signin', {
+    return this.http.post(AUTH_API + 'seeker_login', {
       username,
       password
     }, httpOptions);
   }
-  register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(AUTH_API + 'signup', {
+  register(username: string, email: string, password: string, address: string): Observable<any> {
+    return this.http.post(AUTH_API + 'seeker_registration', {
       username,
       email,
-      password
+      password,
+      address,
     }, httpOptions);
   }
 }
