@@ -1,25 +1,18 @@
 package controllers
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	m "app_backend/model"
+	"app_backend/services"
 
-	"github.com/gin-contrib/sessions"
+	"app_backend/middleware"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
-
-func RandToken(l int) string {
-	b := make([]byte, l)
-	rand.Read(b)
-	return base64.StdEncoding.EncodeToString(b)
-}
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -29,24 +22,6 @@ func HashPassword(password string) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
-}
-
-func Login(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Set("id", 12090292)
-	session.Set("email", "test@gmail.com")
-	session.Save()
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User Sign In successfully",
-	})
-}
-func Logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Clear()
-	session.Save()
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User Sign out successfully",
-	})
 }
 
 func Create_seeker(db *gorm.DB) gin.HandlerFunc {
@@ -92,7 +67,6 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 
 		login.Email = sandp.ProviderEmail
 		hashPassword, err := HashPassword(sandp.ProviderPassword)
-		fmt.Println("Here I am", hashPassword)
 		if err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
@@ -122,7 +96,6 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
-			fmt.Println("Passwords are", auth.Password, storedAuth.Password)
 			err := bcrypt.CompareHashAndPassword([]byte(storedAuth.Password), []byte(auth.Password))
 			if err != nil {
 				fmt.Println(err)
@@ -130,7 +103,14 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 				c.JSON(401, gin.H{"message": "Login Failed!"})
 
 			} else {
-				c.JSON(http.StatusOK, storedAuth)
+				jwtToken, err2 := services.GenerateToken(auth.Email)
+				if err2 != nil {
+					c.JSON(403, gin.H{"message": "There was a problem logging you in, try again later"})
+					c.Abort()
+					return
+				}
+
+				c.JSON(200, gin.H{"message": "Log in success", "token": jwtToken})
 				fmt.Println("successfully logged in !")
 
 			}
@@ -178,13 +158,34 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 
 func Book(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		requiredToken := c.Request.Header["Authorization"]
+
+		// Check if the token is provided
+		print(len(requiredToken))
+		if len(requiredToken) == 0 {
+			// Abort with error
+			fmt.Println("1.No session found for current user")
+			c.AbortWithStatus(404)
+			c.JSON(404, gin.H{"message": "No session found for current user"})
+			return
+		}
+
+		_, err := middleware.Authenticate(requiredToken[0])
+
+		if err != nil {
+			fmt.Println("2.No session found for current user")
+			c.AbortWithStatus(403)
+			return
+		}
 
 		var booking m.Booking
 
-		id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
-		booking.ServiceId = id
-		booking.SeekerEmail = c.Params.ByName("SeekerEmail")
-		booking.SeekerName = c.Params.ByName("SeekerName")
+		c.BindJSON(&booking)
+
+		// id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
+		// booking.ServiceId = id
+		// booking.SeekerEmail = c.Params.ByName("SeekerEmail")
+		// booking.SeekerName = c.Params.ByName("SeekerName")
 
 		db.Create(&booking)
 
