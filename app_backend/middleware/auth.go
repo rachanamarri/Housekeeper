@@ -1,21 +1,25 @@
 package middleware
 
 import (
-	"net/http"
+	"app_backend/services"
+	"strings"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-func Authentication() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		sessionID := session.Get("id")
-		if sessionID == nil {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": "unauthorized",
-			})
-			c.Abort()
-		}
-	}
+// This will help in handling error response
+func responseWithError(c *gin.Context, code int, message interface{}) {
+	c.AbortWithStatusJSON(code, gin.H{"message": message})
+}
+
+// Authenticate is a middleware that fetches user details from token
+func Authenticate(requiredToken string) (string, error) {
+
+	// Get email from encoded token
+	splitToken := strings.Split(requiredToken, "Bearer ")
+	reqToken := splitToken[1]
+
+	userID, err := services.DecodeToken(reqToken)
+	return userID, err
+
 }

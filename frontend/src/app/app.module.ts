@@ -7,24 +7,39 @@ import { Routes, RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceComponent } from './service/service.component';
 import { ServiceviewComponent } from './serviceview/serviceview.component';
+import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
+import { AboutusComponent } from './aboutus/aboutus.component';
+import { HttpClientModule } from '@angular/common/http';
+import { RegisterComponent } from './register/register.component';
+
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
-  { path: 'service/:id', component: ServiceComponent }
+  {path: 'service/:id', component: ServiceComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     ServiceComponent,
-    ServiceviewComponent
+    ServiceviewComponent,
+    LoginComponent,
+    AboutusComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MatSliderModule,
     MatToolbarModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
+    FormsModule,
+    HttpClientModule,
+    
+    
   ],
   providers: [],
   bootstrap: [AppComponent],

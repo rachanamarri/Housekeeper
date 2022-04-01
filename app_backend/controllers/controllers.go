@@ -1,42 +1,27 @@
 package controllers
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 
 	m "app_backend/model"
+	"app_backend/services"
 
-	"github.com/gin-contrib/sessions"
+	"app_backend/middleware"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func RandToken(l int) string {
-	b := make([]byte, l)
-	rand.Read(b)
-	return base64.StdEncoding.EncodeToString(b)
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
 
-func Login(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Set("id", 12090292)
-	session.Set("email", "test@gmail.com")
-	session.Save()
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User Sign In successfully",
-	})
-}
-func Logout(c *gin.Context) {
-	session := sessions.Default(c)
-	session.Clear()
-	session.Save()
-	c.JSON(http.StatusOK, gin.H{
-		"message": "User Sign out successfully",
-	})
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
 
 func Create_seeker(db *gorm.DB) gin.HandlerFunc {
@@ -44,11 +29,18 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 
 		var seeker m.Seeker
 		var login m.Login
-
+		fmt.Println(c)
 		c.BindJSON(&seeker)
 
 		login.Email = seeker.Email
-		login.Password = seeker.Password
+		hashPassword, err := HashPassword(seeker.Password)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+			fmt.Println("Hash_Password ", hashPassword)
+		}
 
 		db.Create(&seeker)
 		db.Create(&login)
@@ -72,14 +64,19 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 		count := db.Find(&sandp1)
 
 		sandp.ServiceId = count.RowsAffected + 1
-		fmt.Println(sandp.ProviderEmail, sandp.ProviderPassword)
+
 		login.Email = sandp.ProviderEmail
-		login.Password = sandp.ProviderPassword
+		hashPassword, err := HashPassword(sandp.ProviderPassword)
+		if err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println(err)
+		} else {
+			login.Password = hashPassword
+		}
 
 		db.Create(&login)
 
 		db.Create(&sandp)
-		fmt.Println(sandp.ServiceName)
 
 		c.JSON(http.StatusOK, sandp)
 		fmt.Println("successfully added an entry into provider DB !")
@@ -99,19 +96,23 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
-			match := strings.Compare(auth.Password, storedAuth.Password)
-			if match == 0 {
-				// fmt.Println("Reached here 6")
-				// fmt.Println("match")
-				// session := sessions.Default(c)
-				// session.Set("id", 12090292)
-				// session.Set("email", "test@gmail.com")
-				// session.Save()
-				c.JSON(http.StatusOK, storedAuth)
-				fmt.Println("successfully logged in !")
-			} else {
+			err := bcrypt.CompareHashAndPassword([]byte(storedAuth.Password), []byte(auth.Password))
+			if err != nil {
+				fmt.Println(err)
 				fmt.Println("No match")
 				c.JSON(401, gin.H{"message": "Login Failed!"})
+
+			} else {
+				jwtToken, err2 := services.GenerateToken(auth.Email)
+				if err2 != nil {
+					c.JSON(403, gin.H{"message": "There was a problem logging you in, try again later"})
+					c.Abort()
+					return
+				}
+
+				c.JSON(200, gin.H{"message": "Log in success", "token": jwtToken})
+				fmt.Println("successfully logged in !")
+
 			}
 
 		}
@@ -148,6 +149,7 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 			fmt.Println(err)
 		} else {
 			c.JSON(200, service)
+			//fix it : sensitive info like password sould not be displayed on the browser
 		}
 	}
 
@@ -156,13 +158,34 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 
 func Book(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		requiredToken := c.Request.Header["Authorization"]
+
+		// Check if the token is provided
+		print(len(requiredToken))
+		if len(requiredToken) == 0 {
+			// Abort with error
+			fmt.Println("1.No session found for current user")
+			c.AbortWithStatus(404)
+			c.JSON(404, gin.H{"message": "No session found for current user"})
+			return
+		}
+
+		_, err := middleware.Authenticate(requiredToken[0])
+
+		if err != nil {
+			fmt.Println("2.No session found for current user")
+			c.AbortWithStatus(403)
+			return
+		}
 
 		var booking m.Booking
 
-		id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
-		booking.ServiceId = id
-		booking.SeekerEmail = c.Params.ByName("SeekerEmail")
-		booking.SeekerName = c.Params.ByName("SeekerName")
+		c.BindJSON(&booking)
+
+		// id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
+		// booking.ServiceId = id
+		// booking.SeekerEmail = c.Params.ByName("SeekerEmail")
+		// booking.SeekerName = c.Params.ByName("SeekerName")
 
 		db.Create(&booking)
 
@@ -171,6 +194,19 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 
 	return gin.HandlerFunc(fn)
 
+}
+
+func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+
+		var snp m.ServiceAndProvider
+		var rtngs m.Ratings
+
+		id := c.Params.ByName("ServiceId")
+		fmt.Println(id)
+
+	}
+	return gin.HandlerFunc(fn)
 }
 
 func Home(db *gorm.DB) gin.HandlerFunc {

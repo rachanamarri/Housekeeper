@@ -1,9 +1,19 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
+
+	cnt "app_backend/controllers"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/stretchr/testify/assert"
 )
 
 //var dbName string = "test.db"
@@ -11,6 +21,8 @@ import (
 //var snp []m.ServiceAndProvider
 //var login []m.Login
 //var book []m.Booking
+
+var dB *gorm.DB
 
 // test to view a service, given its ID
 func TestMain(m *testing.M) {
@@ -22,5 +34,25 @@ func TestMain(m *testing.M) {
 }
 
 func TestHomePage(t *testing.T) {
-	log.Println("this is my firstt test")
+
+	r := httptest.NewRecorder()
+	c, _ := gin.CreateTestContext(r)
+
+	c.Request, _ = http.NewRequest("GET", "/", nil)
+
+	cnt.Home(dB)
+
+	var response gin.H
+
+	err := json.Unmarshal(r.Body.Bytes(), &response)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	msg := response["message"]
+
+	fmt.Println("msg")
+
+	assert.Equal(t, msg, "Home Page")
+
 }
