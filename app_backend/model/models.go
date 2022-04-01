@@ -3,7 +3,7 @@ package model
 import "github.com/markphelps/flipt/storage/sql/common"
 
 type Seeker struct {
-	Name     string `json:"Name"`
+	Name     string `json:"name"`
 	Email    string `json:"Email"`
 	Password string `json:"password"`
 	Address  string `json:"address"`

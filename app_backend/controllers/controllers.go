@@ -29,8 +29,8 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 
 		var seeker m.Seeker
 		var login m.Login
-		fmt.Println(c)
 		c.BindJSON(&seeker)
+		fmt.Println(seeker)
 
 		login.Email = seeker.Email
 		hashPassword, err := HashPassword(seeker.Password)
@@ -91,11 +91,14 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 		var auth m.Login
 		var storedAuth m.Login
 		c.BindJSON(&auth)
+		// fmt.Println("Got from client", auth)
 		err := db.Where("Email = ?", auth.Email).First(&storedAuth).Error
 		if err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
+
+			// fmt.Println(storedAuth.Password, auth.Password)
 			err := bcrypt.CompareHashAndPassword([]byte(storedAuth.Password), []byte(auth.Password))
 			if err != nil {
 				fmt.Println(err)
@@ -166,7 +169,7 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 			// Abort with error
 			fmt.Println("1.No session found for current user")
 			c.AbortWithStatus(404)
-			c.JSON(404, gin.H{"message": "No session found for current user"})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
 			return
 		}
 
@@ -175,17 +178,13 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 		if err != nil {
 			fmt.Println("2.No session found for current user")
 			c.AbortWithStatus(403)
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
 			return
 		}
 
 		var booking m.Booking
 
 		c.BindJSON(&booking)
-
-		// id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
-		// booking.ServiceId = id
-		// booking.SeekerEmail = c.Params.ByName("SeekerEmail")
-		// booking.SeekerName = c.Params.ByName("SeekerName")
 
 		db.Create(&booking)
 
@@ -203,7 +202,7 @@ func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
 		var rtngs m.Ratings
 
 		id := c.Params.ByName("ServiceId")
-		fmt.Println(id)
+		fmt.Println(id, snp, rtngs)
 
 	}
 	return gin.HandlerFunc(fn)
