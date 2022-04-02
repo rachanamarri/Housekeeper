@@ -173,9 +173,9 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
 			return
 		}
-
+		fmt.Println("Reached here 1")
 		_, err := middleware.Authenticate(requiredToken[0])
-
+		fmt.Println("Reached here 2")
 		if err != nil {
 			fmt.Println("2.No session found for current user")
 			c.AbortWithStatus(403)
