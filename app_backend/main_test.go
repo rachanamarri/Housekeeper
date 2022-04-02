@@ -4,6 +4,7 @@ import (
 	s "app_backend/controllers"
 	m "app_backend/model"
 	"fmt"
+	"strconv"
 
 	"bytes"
 	"encoding/json"
@@ -384,11 +385,24 @@ func TestServiceBookAPI(t *testing.T) {
 	}
 	defer db.Close()
 
-	req, w, err := setServiceBookRouter(db, "/:8/book")
+	mock_service_book := m.Booking{
+
+		ServiceId:   66,
+		SeekerName:  "Lahari",
+		SeekerEmail: "lahari@gmail.com",
+	}
+
+	reqBody, err := json.Marshal(mock_service_book)
+	if err != nil {
+		a.Error(err)
+	}
+	end_url := "/:" + strconv.Itoa(int(mock_service_book.ServiceId)) + "/book"
+
+	req, w, err := setServiceBookRouter(db, end_url, bytes.NewBuffer(reqBody))
 
 	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
 	// Only when header is sent
-	// a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
 
 	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
@@ -400,16 +414,17 @@ func TestServiceBookAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	expected := m.Booking{}
+	expected := mock_service_book
 	a.Equal(expected, actual)
 }
 
-func setServiceBookRouter(db *gorm.DB, url string) (*http.Request, *httptest.ResponseRecorder, error) {
+func setServiceBookRouter(db *gorm.DB, url string, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
 	r.POST("/services"+url, s.Book(db))
 
-	req, err := http.NewRequest(http.MethodPost, "/services"+url, nil)
+	req, err := http.NewRequest(http.MethodPost, "/services"+url, body)
+	req.Header.Set("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxhaGFyaUBnbWFpbC5jb20iLCJleHAiOjE2NDg5NTEzMDl9.8CCPJsoviPFjvp2ORrzKX1Hfl-PzUo0HzrBt0j6tcXM")
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}
