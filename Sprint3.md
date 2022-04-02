@@ -35,9 +35,9 @@
 
 **1. Rate Service POST API :**
     This API will store the ratings of the user(seeker) given to the service that was provided.
-    ```
-    POST /services/:ServiceId/rate_service
-    ```
+```
+POST /services/:ServiceId/rate_service
+```
 **Example Request Body**
     ```
     {
