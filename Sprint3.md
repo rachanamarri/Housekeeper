@@ -14,13 +14,17 @@
 
 2. Creating the Profile page and storing customer details
 
-3. Angular Project for Service Provider Dashboad
+3. Service Provider Dashboard
 
 4. Seeker UI Page completion
 
-5. Documentation
+5. Integration of Backend and Frontend
 
-6. Integration of Backend and Frontend
+6. cypress test for registration
+
+7. Cypress test for login
+
+8. JWT token authorization and session storage
 
 <h2>Backend Development</h2> 
 
