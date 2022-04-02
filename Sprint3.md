@@ -39,10 +39,10 @@
 POST /services/:ServiceId/rate_service
 ```
 **Example Request Body**
-    ```
-    {
-        "ServiceId":3
-        "ProviderEmail":"alex20@gmail.com"
-        "Rating":5
-    }
+```
+{
+    "ServiceId":3
+    "ProviderEmail":"alex20@gmail.com"
+    "Rating":5
+}
 
