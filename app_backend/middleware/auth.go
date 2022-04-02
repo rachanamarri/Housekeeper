@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"app_backend/services"
-	// "fmt"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -23,5 +22,4 @@ func Authenticate(requiredToken string) (string, error) {
 
 	userID, err := services.DecodeToken(reqToken)
 	return userID, err
-
 }
