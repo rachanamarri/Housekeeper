@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	m "app_backend/model"
 	"app_backend/services"
@@ -205,6 +206,33 @@ func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
 		fmt.Println(id, snp, rtngs)
 
 	}
+	return gin.HandlerFunc(fn)
+}
+
+func Rate(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+
+		var rate m.Ratings
+		var service m.ServiceAndProvider
+
+		id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
+		rate.ServiceID = id
+
+		if err := db.First(&service, "ServiceId = ?", id).Error; err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println("the provider does not exist")
+		} else {
+			rate.ProviderEmail = service.ProviderEmail
+		}
+
+		rate.Rating, _ = strconv.ParseInt(c.Params.ByName("rating"), 10, 64)
+
+		db.Create(&rate)
+
+		c.JSON(200, rate)
+
+	}
+
 	return gin.HandlerFunc(fn)
 }
 
