@@ -36,5 +36,5 @@ type Store struct {
 type Ratings struct {
 	ServiceID     int64  `json:"ServiceId"`
 	ProviderEmail string `json:"ProviderEmail"`
-	Rating        int64  `json:"rating"`
+	Rating        int64  `json:"Rating"`
 }

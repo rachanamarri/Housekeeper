@@ -66,6 +66,7 @@ func main() {
 	r.GET("/services/:ServiceId", s.List_service(db))
 	//When the seeker tries to book a service, the data has to be updated in the bookings table
 	r.POST("/services/:ServiceId/book", s.Book(db))
+	//r.POST("/services/:ServiceId/rate_service",s.Rate(db))
 
 	r.Run(":8080")
 
