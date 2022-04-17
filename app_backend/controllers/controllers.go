@@ -54,20 +54,20 @@ func Create_seeker(db *gorm.DB) gin.HandlerFunc {
 
 }
 
-func Create_service(db *gorm.DB) gin.HandlerFunc {
+func Create_provider(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
 		var login m.Login
-		var sandp, sandp1 m.ServiceAndProvider
+		var sandp, sandp1 m.Provider
 
 		c.BindJSON(&sandp)
 
 		count := db.Find(&sandp1)
 
-		sandp.ServiceId = count.RowsAffected + 1
+		sandp.ProviderId = count.RowsAffected + 1
 
-		login.Email = sandp.ProviderEmail
-		hashPassword, err := HashPassword(sandp.ProviderPassword)
+		login.Email = sandp.Email
+		hashPassword, err := HashPassword(sandp.Password)
 		if err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
@@ -81,6 +81,26 @@ func Create_service(db *gorm.DB) gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, sandp)
 		fmt.Println("successfully added an entry into provider DB !")
+	}
+
+	return gin.HandlerFunc(fn)
+
+}
+
+func Create_service(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+
+		var serv, serv1 m.Service
+
+		c.BindJSON(&serv)
+
+		count := db.Find(&serv1)
+
+		serv.ServiceId = count.RowsAffected + 1
+		db.Create(&serv)
+
+		c.JSON(http.StatusOK, serv)
+		fmt.Println("successfully added an entry into service DB !")
 	}
 
 	return gin.HandlerFunc(fn)
@@ -126,15 +146,15 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 
 }
 
-func Listing_services(db *gorm.DB) gin.HandlerFunc {
+func Listing_providers(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
-		var services []m.ServiceAndProvider
-		if err := db.Find(&services).Error; err != nil {
+		var providers []m.Provider
+		if err := db.Find(&providers).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
-			c.JSON(200, services)
+			c.JSON(200, providers)
 		}
 	}
 	return gin.HandlerFunc(fn)
@@ -144,11 +164,11 @@ func Listing_services(db *gorm.DB) gin.HandlerFunc {
 func List_service(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
-		id := c.Params.ByName("ServiceId")
+		id := c.Params.ByName("ProviderId")
 		fmt.Println(id)
-		var service m.ServiceAndProvider
+		var service m.Provider
 
-		if err := db.First(&service, "ServiceId = ?", id).Error; err != nil {
+		if err := db.First(&service, "ProviderId = ?", id).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
@@ -199,7 +219,7 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
-		var snp m.ServiceAndProvider
+		var snp m.Provider
 		var rtngs m.Ratings
 
 		id := c.Params.ByName("ServiceId")
@@ -213,7 +233,7 @@ func Rate(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
 		var rate m.Ratings
-		var service m.ServiceAndProvider
+		var service m.Provider
 
 		id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
 		rate.ServiceID = id
@@ -222,7 +242,7 @@ func Rate(db *gorm.DB) gin.HandlerFunc {
 			c.AbortWithStatus(404)
 			fmt.Println("the provider does not exist")
 		} else {
-			rate.ProviderEmail = service.ProviderEmail
+			rate.ProviderEmail = service.Email
 		}
 
 		rate.Rating, _ = strconv.ParseInt(c.Params.ByName("rating"), 10, 64)

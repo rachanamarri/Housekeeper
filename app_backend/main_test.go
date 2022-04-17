@@ -97,12 +97,10 @@ func TestCreateServiceAPI(t *testing.T) {
 	}
 	defer db.Close()
 
-	mock_provider := m.ServiceAndProvider{
-		ServiceName:        "Spa",
-		ProviderEmail:      "spa@lakme.com",
-		ProviderPassword:   "lakmepassword",
-		ServicePrice:       500,
-		ServiceDescription: "Spa at home in 120 mins",
+	mock_provider := m.Provider{
+		Name:     "Spa",
+		Email:    "spa@lakme.com",
+		Password: "lakmepassword",
 	}
 
 	reqBody, err := json.Marshal(mock_provider)
@@ -120,11 +118,11 @@ func TestCreateServiceAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
-	actual.ServiceId = 0
+	actual.ProviderId = 0
 	expected := mock_provider
 	a.Equal(expected, actual)
 }
@@ -281,19 +279,19 @@ func TestServicesAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
 
-	expected := m.ServiceAndProvider{}
+	expected := m.Provider{}
 	a.Equal(expected, actual)
 }
 
 func setServicesRouter(db *gorm.DB) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.GET("/services", s.Listing_services(db))
+	r.GET("/services", s.Listing_providers(db))
 
 	req, err := http.NewRequest(http.MethodGet, "/services", nil)
 	if err != nil {
@@ -332,19 +330,19 @@ func TestServicesIDAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
 
-	expected := m.ServiceAndProvider{}
+	expected := m.Provider{}
 	a.Equal(expected, actual)
 }
 
 func setServicesIDRouter(db *gorm.DB, url string) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.GET("/services"+url, s.Listing_services(db))
+	r.GET("/services"+url, s.Listing_providers(db))
 
 	req, err := http.NewRequest(http.MethodGet, "/services"+url, nil)
 	if err != nil {
@@ -358,14 +356,12 @@ func setServicesIDRouter(db *gorm.DB, url string) (*http.Request, *httptest.Resp
 
 }
 
-func insertServiceProvider(db *gorm.DB) (m.ServiceAndProvider, error) {
-	s := m.ServiceAndProvider{
-		ServiceId:          99,
-		ServiceName:        "test",
-		ServicePrice:       100,
-		ServiceDescription: "none",
-		ProviderEmail:      "test@gmail.com",
-		ProviderPassword:   "test123",
+func insertServiceProvider(db *gorm.DB) (m.Provider, error) {
+	s := m.Provider{
+		ProviderId: 99,
+		Name:       "test",
+		Email:      "test@gmail.com",
+		Password:   "test123",
 	}
 
 	if err := db.Create(&s).Error; err != nil {
