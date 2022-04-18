@@ -84,7 +84,12 @@
       </div>
     </div>
     <div class="form-group">
-      <button id="registerSubmit" class="btn btn-primary btn-block">Sign Up</button>
+      
+      <button class="btn btn-primary btn-block" (click)="test2()">Sign Up as service provider</button>
+    </div>
+    <div class="form-group">
+      
+      <button class="btn btn-primary btn-block" (click)="test1()">Sign Up as seeker provider</button>
     </div>
     <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
       Signup failed!<br />{{ errorMessage }}

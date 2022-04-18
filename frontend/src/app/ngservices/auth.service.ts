@@ -42,6 +42,14 @@ export class AuthService {
       email,
       password,
       address,
-    }, httpOptions);
+    }, httpOptions);}
+
+    registerAsProvider(username: string, email: string, password: string, address: string): Observable<any> {
+      return this.http.post(AUTH_API + 'seeker_registration', {
+        username,
+        email,
+        password,
+        address,
+      }, httpOptions);
   }
 }

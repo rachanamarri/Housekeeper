@@ -15,7 +15,7 @@ export class RegisterComponent implements OnInit {
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
-  
+  isProvider = true;
 
   constructor(private authService: AuthService) { 
     
@@ -23,22 +23,56 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
   }
+   
+
+  test1() {
+    console.log("entered here");
+    this.isProvider= true;
+    this.onSubmit();
+  }
+
+  test2() {
+    console.log("entered here");
+    this.isProvider= false;
+    this.onSubmit();
+  }
+
 
   onSubmit(): void {
     debugger;
     const { username, email, password, address } = this.form;
+    
 
-    this.authService.register(username, email, password, address).subscribe({
-      next: data => {
-        console.log(data);
-        this.isSuccessful = true;
-        this.isSignUpFailed = false;
-      },
-      error: err => {
-        this.errorMessage = err.error.message;
-        this.isSignUpFailed = true;
-      }
-    });
+
+    if(this.isProvider==false) {
+      // hit api
+      this.authService.register(username, email, password, address).subscribe({
+        next: data => {
+          console.log(data);
+          this.isSuccessful = true;
+          this.isSignUpFailed = false;
+        },
+        error: err => {
+          this.errorMessage = err.error.message;
+          this.isSignUpFailed = true;
+        }
+      });
+    }  
+    
+    else {
+      this.authService.registerAsProvider(username, email, password, address).subscribe({
+        next: data => {
+          console.log(data);
+          this.isSuccessful = true;
+          this.isSignUpFailed = false;
+        },
+        error: err => {
+          this.errorMessage = err.error.message;
+          this.isSignUpFailed = true;
+        }
+      });
+    }
+    
   }
-
+  
 }
