@@ -229,6 +229,29 @@ func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
 	return gin.HandlerFunc(fn)
 }
 
+func EmailService(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		var seeker m.Seeker
+		name := c.Params.ByName("SeekerName")
+		fmt.Println(name)
+		if err := db.First(&seeker, "Name = ?", name).Error; err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println("the seeker does not exist")
+		} else {
+			data := struct {
+				ReceiverName string
+				SenderName   string
+			}{
+				ReceiverName: seeker.Name,
+				SenderName:   "Mitali Sheth",
+			}
+			seeker_email := seeker.Email
+			SendEmailSMTP([]string{seeker_email}, data, "sample.txt")
+		}
+	}
+	return gin.HandlerFunc(fn)
+}
+
 func Rate(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
