@@ -27,52 +27,76 @@ export class RegisterComponent implements OnInit {
 
   test1() {
     console.log("entered here");
+    const { username, email, password, address } = this.form;
     this.isProvider= true;
-    this.onSubmit();
+    //this.onSubmit();
+    this.authService.register(username, email, password, address).subscribe({
+      next: data => {
+        console.log(data);
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
+      },
+      error: err => {
+        this.errorMessage = err.error.message;
+        this.isSignUpFailed = true;
+      }
+    });
   }
 
   test2() {
     console.log("entered here");
-    this.isProvider= false;
-    this.onSubmit();
-  }
-
-
-  onSubmit(): void {
-    debugger;
     const { username, email, password, address } = this.form;
-    
-
-
-    if(this.isProvider==false) {
-      // hit api
-      this.authService.register(username, email, password, address).subscribe({
-        next: data => {
-          console.log(data);
-          this.isSuccessful = true;
-          this.isSignUpFailed = false;
-        },
-        error: err => {
-          this.errorMessage = err.error.message;
-          this.isSignUpFailed = true;
-        }
-      });
-    }  
-    
-    else {
-      this.authService.registerAsProvider(username, email, password, address).subscribe({
-        next: data => {
-          console.log(data);
-          this.isSuccessful = true;
-          this.isSignUpFailed = false;
-        },
-        error: err => {
-          this.errorMessage = err.error.message;
-          this.isSignUpFailed = true;
-        }
-      });
-    }
-    
+    this.isProvider= false;
+    //this.onSubmit();
+    this.authService.registerAsProvider(username, email, password, address).subscribe({
+      next: data => {
+        console.log(data);
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
+      },
+      error: err => {
+        this.errorMessage = err.error.message;
+        this.isSignUpFailed = true;
+      }
+    });
   }
+
+
+  // onSubmit(): void {
+  //   debugger;
+  //   const { username, email, password, address } = this.form;
+    
+
+
+  //   if(this.isProvider==false) {
+  //     // hit api
+  //     this.authService.register(username, email, password, address).subscribe({
+  //       next: data => {
+  //         console.log(data);
+  //         this.isSuccessful = true;
+  //         this.isSignUpFailed = false;
+  //       },
+  //       error: err => {
+  //         this.errorMessage = err.error.message;
+  //         this.isSignUpFailed = true;
+  //       }
+  //     });
+  //   }  
+    
+  //   else {
+  //     this.authService.registerAsProvider(username, email, password, address).subscribe({
+  //       next: data => {
+  //         console.log(data);
+  //         this.isSuccessful = true;
+  //         this.isSignUpFailed = false;
+  //       },
+  //       error: err => {
+  //         this.errorMessage = err.error.message;
+  //         this.isSignUpFailed = true;
+  //       }
+  //     });
+  //   }
+    
+  // }
   
 }

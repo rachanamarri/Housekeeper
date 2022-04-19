@@ -1,10 +1,10 @@
 <div class="col-md-12">
     <div class="card card-container">
-      
+      <!-- (ngSubmit)="f.form.valid && onSubmit()" -->
       <form
         *ngIf="!isSuccessful"
         name="form"
-        (ngSubmit)="f.form.valid && onSubmit()"
+        
         #f="ngForm"
         novalidate
       >
@@ -85,11 +85,11 @@
     </div>
     <div class="form-group">
       
-      <button class="btn btn-primary btn-block" (click)="test2()">Sign Up as service seeker</button>
+      <button class="btn btn-primary btn-block" (click)="test1()">Sign Up as service seeker</button>
     </div>
     <div class="form-group">
       
-      <button class="btn btn-primary btn-block" (click)="test1()">Sign Up as service provider</button>
+      <button class="btn btn-primary btn-block" (click)="test2()">Sign Up as service provider</button>
     </div>
     <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
       Signup failed!<br />{{ errorMessage }}

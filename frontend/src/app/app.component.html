@@ -10,13 +10,17 @@
     <button style="border: none; color:#DE5D83; padding-left: 5px">AboutUs</button></a></span>
   <!-- <span> View Our Services</span>
   <span>Become a Service Provider</span> -->
-  <span >
+  <span *ngIf="!isLoggedIn">
+    <!-- {{isLoggedIn}} -->
     <a routerLink="login" style="text-decoration: none;"> 
       <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px">Login</button></a>
   </span>
-  <span >
+  <span *ngIf="!isLoggedIn">
     <a  routerLink="register" style="text-decoration: none;">
       <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px">Register</button></a> 
+  </span>
+  <span *ngIf="isLoggedIn">
+      <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px" (click)="logOut()">Log out</button> 
   </span>
   <span class="material-icons">
     shopping_cart

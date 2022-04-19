@@ -14,6 +14,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
 import { ProviderBoardComponent } from './provider-board/provider-board.component';
 import { FooterComponent } from './footer/footer.component';
+import { SharedService } from './ngservices/shared-service';
 
 
 const routes: Routes = [
@@ -46,7 +47,7 @@ const routes: Routes = [
     
     
   ],
-  providers: [],
+  providers: [SharedService],
   bootstrap: [AppComponent],
 
   exports: [RouterModule]

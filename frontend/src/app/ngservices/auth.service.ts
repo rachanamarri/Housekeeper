@@ -29,15 +29,15 @@ export class AuthService {
 
   register(username: string, email: string, password: string, address: string): Observable<any> {
     return this.http.post(AUTH_API + 'seeker_registration', {
-      name,
+      name: username,
       email,
       password,
       address,
     }, httpOptions);}
 
     registerAsProvider(username: string, email: string, password: string, address: string): Observable<any> {
-      return this.http.post(AUTH_API + 'seeker_registration', {
-        username,
+      return this.http.post(AUTH_API + 'provider_registration', {
+        name: username,
         email,
         password,
         address,
