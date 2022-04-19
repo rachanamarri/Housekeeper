@@ -9,13 +9,14 @@ import { TokenStorageService } from '../ngservices/token-storage.service';
 })
 export class LoginComponent implements OnInit {
   form: any = {
-    name: null,
+    username: null,
     password: null
   };
   isLoggedIn = false;
   isLoginFailed = false;
   errorMessage = '';
   roles: string[] = [];  
+  isProvider = true;
     
 
   constructor(private authService: AuthService, private tokenStorage: TokenStorageService) { }
@@ -27,22 +28,55 @@ export class LoginComponent implements OnInit {
       this.roles = this.tokenStorage.getUser().roles;
     }
 }
+
+
+test1() {
+  console.log("entered test for login as seeker");
+  this.isProvider= true;
+  this.onSubmit();
+}
+
+test2() {
+  console.log("entered test for login as provider");
+  this.isProvider= false;
+  this.onSubmit();
+}
+
 onSubmit(): void {
-  debugger;
+
   const { username, password } = this.form;
+  if(this.isProvider==false){
   this.authService.login(username, password).subscribe({
     next: data => {
       this.tokenStorage.saveToken(data.accessToken);
       this.tokenStorage.saveUser(data);
       this.isLoginFailed = false;
       this.isLoggedIn = true;
-      this.roles = username;
+      this.roles = this.tokenStorage.getUser().roles;
+      this.reloadPage();
     },
     error: err => {
       this.errorMessage = err.error.message;
       this.isLoginFailed = true;
     }
   });
+}
+else{
+  this.authService.loginAsProvider(username, password).subscribe({
+    next: data => {
+      this.tokenStorage.saveToken(data.accessToken);
+      this.tokenStorage.saveUser(data);
+      this.isLoginFailed = false;
+      this.isLoggedIn = true;
+      this.roles = this.tokenStorage.getUser().roles;
+      this.reloadPage();
+    },
+    error: err => {
+      this.errorMessage = err.error.message;
+      this.isLoginFailed = true;
+    }
+  });
+}
 }
 reloadPage(): void {
   window.location.reload();
