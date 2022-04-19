@@ -47,9 +47,9 @@ Database: SQlite
 
 #### [API Documentation]()
 
-#### [Project Board]()
+#### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
 
-#### [Sprint-4 Deliverables]()
+#### [Sprint-4 Deliverables](https://github.com/mitali3112/Housekeeper/blob/main/Sprint4.md)
 
 ## Team Members
 ### Frontend
