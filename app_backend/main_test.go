@@ -372,6 +372,63 @@ func insertServiceProvider(db *gorm.DB) (m.Provider, error) {
 	return s, nil
 }
 
+func TestServiceRatingAPI(t *testing.T) {
+
+	a := assert.New(t)
+
+	db, err := gorm.Open("sqlite3", "./dbase.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	mock_rating := m.Ratings{
+		Rating: 4,
+	}
+
+	reqBody, err := json.Marshal(mock_rating)
+	if err != nil {
+		a.Error(err)
+	}
+	end_url := "/:" + strconv.Itoa(int(mock_rating.ServiceID)) + "/rate_service"
+
+	req, w, err := setServiceRateRouter(db, end_url, bytes.NewBuffer(reqBody))
+
+	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
+
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		a.Error(err)
+	}
+
+	actual := m.Ratings{}
+	if err := json.Unmarshal(body, &actual); err != nil {
+		a.Error(err)
+	}
+	actual.ServiceID = 0
+	actual.ServiceName = ""
+	expected := mock_rating
+
+	a.Equal(expected, actual)
+}
+
+func setServiceRatingRouter(db *gorm.DB, url string, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
+	r := gin.New()
+
+	r.POST("/services"+url, s.Rate(db))
+
+	req, err := http.NewRequest(http.MethodPost, "/services"+url, body)
+	if err != nil {
+		return req, httptest.NewRecorder(), err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return req, w, nil
+
+}
+
 func TestServiceBookAPI(t *testing.T) {
 
 	a := assert.New(t)
