@@ -22,14 +22,14 @@ export class AuthService {
 
   loginAsProvider(username: string, password: string): Observable<any> {
     return this.http.post(AUTH_API + 'provider_login', {
-      username,
+      Email: username,
       password
     }, httpOptions);
   }
 
   register(username: string, email: string, password: string, address: string): Observable<any> {
     return this.http.post(AUTH_API + 'seeker_registration', {
-      name: username,
+      name: username ,
       email,
       password,
       address,
