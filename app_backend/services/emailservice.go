@@ -1,4 +1,4 @@
-package controllers
+package services
 
 import (
 	"bytes"
@@ -6,15 +6,18 @@ import (
 	"fmt"
 	"html/template"
 	"net/smtp"
+	"os"
 	"path/filepath"
 )
 
 var emailAuth smtp.Auth
 
 func SendEmailSMTP(to []string, data interface{}, template string) (bool, error) {
+	var host_email = os.Getenv("HOST_EMAIL")
+	var host_password = os.Getenv("HOST_PASSWORD")
 	emailHost := "smtp.gmail.com"
-	emailFrom := "yourEmail@gmail.com"
-	emailPassword := "yourEmailPassword"
+	emailFrom := host_email
+	emailPassword := host_password
 	emailPort := 587
 
 	emailAuth = smtp.PlainAuth("", emailFrom, emailPassword, emailHost)

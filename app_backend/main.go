@@ -66,14 +66,13 @@ func main() {
 	r.GET("/seeker_home", nil)
 	r.GET("/provider_home", nil)
 	r.GET("/services", s.Listing_providers(db))
-	r.GET("/services/:ServiceId", s.List_service(db))
+	r.GET("/services/:ProviderId", s.List_service(db))
 	//When the seeker tries to book a service, the data has to be updated in the bookings table
 	r.POST("/services/:ServiceId/book", s.Book(db))
 	r.POST("/services/:ServiceId/rate_service", s.Rate(db))
-	r.POST("/service/emailservice", s.EmailService(db))
+	r.GET("/service/:SeekerName/emailservice", s.EmailService(db))
 
 	r.Run(":8080")
-
 }
 
 func preflight(c *gin.Context) {
