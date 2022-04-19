@@ -193,9 +193,7 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
 			return
 		}
-		fmt.Println("Reached here 1")
 		_, err := middleware.Authenticate(requiredToken[0])
-		fmt.Println("Reached here 2")
 		if err != nil {
 			fmt.Println("2.No session found for current user")
 			c.AbortWithStatus(403)
@@ -225,6 +223,55 @@ func ProviderDetails(db *gorm.DB) gin.HandlerFunc {
 		id := c.Params.ByName("ServiceId")
 		fmt.Println(id, snp, rtngs)
 
+	}
+	return gin.HandlerFunc(fn)
+}
+
+func EmailService(db *gorm.DB) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		requiredToken := c.Request.Header["Authorization"]
+		if len(requiredToken) == 0 {
+			// Abort with error
+			fmt.Println("1.No session found for current user")
+			c.AbortWithStatus(404)
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
+			return
+		}
+		_, err := middleware.Authenticate(requiredToken[0])
+		if err != nil {
+			fmt.Println("2.No session found for current user")
+			c.AbortWithStatus(403)
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "No session found for current user"})
+			return
+		}
+
+		var seeker m.Seeker
+		name := c.Params.ByName("SeekerName")
+		// fmt.Println(name)
+		if err := db.First(&seeker, "Name = ?", name).Error; err != nil {
+			c.AbortWithStatus(404)
+			fmt.Println("the seeker does not exist")
+		} else {
+			// fmt.Println(seeker.Name, seeker.Email)
+			data := struct {
+				ReceiverName string
+				SenderName   string
+			}{
+				ReceiverName: seeker.Name,
+				SenderName:   "Mitali Sheth",
+			}
+			seeker_email := seeker.Email
+			fmt.Println("I am here")
+			res, err := services.SendEmailSMTP([]string{seeker_email}, data, "sample.txt")
+			if err != nil {
+				fmt.Println(err)
+				c.AbortWithStatus(404)
+				fmt.Println("Mail not sent")
+			} else {
+				c.JSON(200, gin.H{"message": "Email sent", "result": res})
+
+			}
+		}
 	}
 	return gin.HandlerFunc(fn)
 }
