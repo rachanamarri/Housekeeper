@@ -112,7 +112,7 @@ func Login_auth(db *gorm.DB) gin.HandlerFunc {
 		var auth m.Login
 		var storedAuth m.Login
 		c.BindJSON(&auth)
-		// fmt.Println("Got from client", auth)
+		fmt.Println("Got from client", auth)
 		err := db.Where("Email = ?", auth.Email).First(&storedAuth).Error
 		if err != nil {
 			c.AbortWithStatus(404)
