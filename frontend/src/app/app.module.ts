@@ -12,13 +12,16 @@ import { FormsModule } from '@angular/forms';
 import { AboutusComponent } from './aboutus/aboutus.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
+import { ProviderBoardComponent } from './provider-board/provider-board.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 const routes: Routes = [
   {path:'', component: ServiceviewComponent},
   {path: 'service/:id', component: ServiceComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { path: 'aboutUs', component: AboutusComponent }
 ];
 
 @NgModule({
@@ -28,7 +31,9 @@ const routes: Routes = [
     ServiceviewComponent,
     LoginComponent,
     AboutusComponent,
-    RegisterComponent
+    RegisterComponent,
+    ProviderBoardComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
