@@ -442,15 +442,15 @@ func TestServiceRateAPI(t *testing.T) {
 	}
 	defer db.Close()
 
-	mock_service_rate := m.Ratings{
+	mock_rating := m.Ratings{
 		Rating: 4,
 	}
 
-	reqBody, err := json.Marshal(mock_service_rate)
+	reqBody, err := json.Marshal(mock_rating)
 	if err != nil {
 		a.Error(err)
 	}
-	end_url := "/:" + strconv.Itoa(int(mock_service_rate.ServiceID)) + "/rate_service"
+	end_url := "/:" + strconv.Itoa(int(mock_rating.ServiceID)) + "/rate_service"
 
 	req, w, err := setServiceRateRouter(db, end_url, bytes.NewBuffer(reqBody))
 
@@ -467,7 +467,7 @@ func TestServiceRateAPI(t *testing.T) {
 	}
 	actual.ServiceID = 0
 	actual.ServiceName = ""
-	expected := mock_service_rate
+	expected := mock_rating
 
 	a.Equal(expected, actual)
 }
