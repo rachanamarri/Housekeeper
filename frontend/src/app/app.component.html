@@ -5,17 +5,22 @@
   <div>
   <span>
     <a routerLink="" style="text-decoration: none;"> 
-    <button style="border-style: none;  padding-left: 5px">Home</button></a></span>
-  <span>About Us</span>
-  <span> View Our Services</span>
-  <span>Become a Service Provider</span>
-  <span >
+    <button style="border: none; color:#DE5D83; padding-left: 5px">Home</button></a></span>
+  <span> <a routerLink="aboutUs" style="text-decoration: none;"> 
+    <button style="border: none; color:#DE5D83; padding-left: 5px">AboutUs</button></a></span>
+  <!-- <span> View Our Services</span>
+  <span>Become a Service Provider</span> -->
+  <span *ngIf="!isLoggedIn">
+    <!-- {{isLoggedIn}} -->
     <a routerLink="login" style="text-decoration: none;"> 
-      <button style="border-style: solid; border-color:orangered; border-radius: 10px; padding-left: 5px">Login</button></a>
+      <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px">Login</button></a>
   </span>
-  <span >
-    <a routerLink="register" style="text-decoration: none;"> 
-      <button style="border-style: solid; border-color:orangered; border-radius: 10px; padding-left: 5px">Register</button></a>
+  <span *ngIf="!isLoggedIn">
+    <a  routerLink="register" style="text-decoration: none;">
+      <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px">Register</button></a> 
+  </span>
+  <span *ngIf="isLoggedIn">
+      <button style="border: none; color:#DE5D83; border-radius: 10px; padding-left: 5px" (click)="logOut()">Log out</button> 
   </span>
   <span class="material-icons">
     shopping_cart
@@ -25,6 +30,7 @@
 </div>
 <router-outlet></router-outlet>
 
+<div app-footer></div>
 
 <script>
   // Get the modal

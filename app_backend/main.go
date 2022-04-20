@@ -4,9 +4,11 @@ import (
 	s "app_backend/controllers"
 	m "app_backend/model"
 	"fmt"
-	"strings"
+	"net/http"
+	"time"
 
-	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/cors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -35,85 +37,46 @@ func main() {
 	db.AutoMigrate(&m.Seeker{})
 	db.AutoMigrate(&m.Login{})
 	db.AutoMigrate(&m.Booking{})
-	db.AutoMigrate(&m.ServiceAndProvider{})
+	db.AutoMigrate(&m.Provider{})
+	db.AutoMigrate(&m.Ratings{})
+	db.AutoMigrate(&m.Service{})
 
 	//creating variable using gin Web Framework to handle routing and serving HTTP requests
 	//r :=gin.Default() does not work, it gives a huge runtime error
 	r := gin.New()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"},
+		AllowMethods:     []string{"GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS", "PATCH"},
+		AllowHeaders:     []string{"accept", "origin", "X-Requested-With", "Content-Type", "Authorization", "token"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "https://github.com"
+		},
+		MaxAge: 12 * time.Hour,
+	}))
+
 	r.GET("/", s.Home(db))
 	r.POST("/seeker_registration", s.Create_seeker(db))
+	r.POST("/provider_registration", s.Create_provider(db))
 	r.POST("/service_registration", s.Create_service(db))
 	r.POST("/seeker_login", s.Login_auth((db)))
 	r.POST("/provider_login", s.Login_auth(db))
 	r.GET("/seeker_home", nil)
 	r.GET("/provider_home", nil)
-	r.GET("/services", s.Listing_services(db))
-	r.GET("/services/:ServiceId", s.List_service(db))
+	r.GET("/services", s.Listing_providers(db))
+	r.GET("/services/:ProviderId", s.List_service(db))
 	//When the seeker tries to book a service, the data has to be updated in the bookings table
 	r.POST("/services/:ServiceId/book", s.Book(db))
-
-	// var store = cookie.NewStore([]byte(controllers.RandToken(64)))
-	// //Using middleware, store is the storage engine created before and can be replaced by other engines
-	// //mysession is the name that will be stored in the cookie on the browser. The server uses this name to find the corresponding session
-	// store.Options(sessions.Options{
-	// 	Path:   "/",
-	// 	MaxAge: 86400 * 7,
-	// })
-	// r.Use(sessions.Sessions("mysession", store))
-
-	// auth := r.Group("/auth")
-	// auth.Use(middleware.Authentication())
-	// {
-	// 	auth.GET("/test", func(c *gin.Context) {
-	// 		c.JSON(200, gin.H{
-	// 			"message": "Everything is ok",
-	// 		})
-	// 	})
-	// }
-	r.GET("/incr", func(c *gin.Context) {
-		session := sessions.Default(c)
-		var count int
-		v := session.Get("count")
-		if v == nil {
-			count = 0
-		} else {
-			count = v.(int)
-			count++
-		}
-		session.Set("count", count)
-		session.Save()
-		c.JSON(200, gin.H{"count": count})
-	})
+	r.POST("/services/:ServiceId/rate_service", s.Rate(db))
+	r.GET("/service/:SeekerName/emailservice", s.EmailService(db))
 
 	r.Run(":8080")
 }
-func Login_auth(db *gorm.DB) gin.HandlerFunc {
-	fn := func(c *gin.Context) {
-		var auth m.Login
-		var storedAuth m.Login
-		c.BindJSON(&auth)
-		err := db.Where("Email = ?", auth.Email).First(&storedAuth).Error
-		if err != nil {
-			c.AbortWithStatus(404)
-			fmt.Println(err)
-		} else {
-			match := strings.Compare(auth.Password, storedAuth.Password)
-			if match == 0 {
-				fmt.Println("match")
-				session := sessions.Default(c)
-				session.Set("id", 12090292)
-				session.Set("email", "test@gmail.com")
-				session.Save()
-				c.JSON(200, gin.H{"message": "login successful!"})
-			} else {
-				fmt.Println("No match")
-				c.JSON(401, gin.H{"message": "Login Failed!"})
-			}
 
-		}
-	}
-
-	return gin.HandlerFunc(fn)
-
+func preflight(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+	c.JSON(http.StatusOK, struct{}{})
 }

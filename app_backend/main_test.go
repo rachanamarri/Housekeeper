@@ -3,6 +3,8 @@ package main
 import (
 	s "app_backend/controllers"
 	m "app_backend/model"
+	"fmt"
+	"strconv"
 
 	"bytes"
 	"encoding/json"
@@ -19,6 +21,12 @@ import (
 
 type APIEnv struct {
 	DB *gorm.DB
+}
+
+type ConsolePrinter struct{}
+
+func (cp *ConsolePrinter) Print(value string) {
+	fmt.Printf("this is value: %s", value)
 }
 
 func TestCreateSeekerAPI(t *testing.T) {
@@ -89,12 +97,10 @@ func TestCreateServiceAPI(t *testing.T) {
 	}
 	defer db.Close()
 
-	mock_provider := m.ServiceAndProvider{
-		ServiceName:        "Spa",
-		ProviderEmail:      "spa@lakme.com",
-		ProviderPassword:   "lakmepassword",
-		ServicePrice:       500,
-		ServiceDescription: "Spa at home in 120 mins",
+	mock_provider := m.Provider{
+		Name:     "Spa",
+		Email:    "spa@lakme.com",
+		Password: "lakmepassword",
 	}
 
 	reqBody, err := json.Marshal(mock_provider)
@@ -112,11 +118,11 @@ func TestCreateServiceAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
-
+	actual.ProviderId = 0
 	expected := mock_provider
 	a.Equal(expected, actual)
 }
@@ -168,6 +174,7 @@ func TestProviderLoginAPI(t *testing.T) {
 	if err != nil {
 		a.Error(err)
 	}
+	t.Logf("Result %s", body)
 
 	actual := m.Login{}
 	if err := json.Unmarshal(body, &actual); err != nil {
@@ -272,19 +279,19 @@ func TestServicesAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
 
-	expected := m.ServiceAndProvider{}
+	expected := m.Provider{}
 	a.Equal(expected, actual)
 }
 
 func setServicesRouter(db *gorm.DB) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.GET("/services", s.Listing_services(db))
+	r.GET("/services", s.Listing_providers(db))
 
 	req, err := http.NewRequest(http.MethodGet, "/services", nil)
 	if err != nil {
@@ -323,19 +330,19 @@ func TestServicesIDAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	actual := m.ServiceAndProvider{}
+	actual := m.Provider{}
 	if err := json.Unmarshal(body, &actual); err != nil {
 		a.Error(err)
 	}
 
-	expected := m.ServiceAndProvider{}
+	expected := m.Provider{}
 	a.Equal(expected, actual)
 }
 
 func setServicesIDRouter(db *gorm.DB, url string) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.GET("/services"+url, s.Listing_services(db))
+	r.GET("/services"+url, s.Listing_providers(db))
 
 	req, err := http.NewRequest(http.MethodGet, "/services"+url, nil)
 	if err != nil {
@@ -349,14 +356,12 @@ func setServicesIDRouter(db *gorm.DB, url string) (*http.Request, *httptest.Resp
 
 }
 
-func insertServiceProvider(db *gorm.DB) (m.ServiceAndProvider, error) {
-	s := m.ServiceAndProvider{
-		ServiceId:          99,
-		ServiceName:        "test",
-		ServicePrice:       100,
-		ServiceDescription: "none",
-		ProviderEmail:      "test@gmail.com",
-		ProviderPassword:   "test123",
+func insertServiceProvider(db *gorm.DB) (m.Provider, error) {
+	s := m.Provider{
+		ProviderId: 99,
+		Name:       "test",
+		Email:      "test@gmail.com",
+		Password:   "test123",
 	}
 
 	if err := db.Create(&s).Error; err != nil {
@@ -376,9 +381,23 @@ func TestServiceBookAPI(t *testing.T) {
 	}
 	defer db.Close()
 
-	req, w, err := setServiceBookRouter(db, "/:8/book")
+	mock_service_book := m.Booking{
+
+		ServiceId:   66,
+		SeekerName:  "Lahari",
+		SeekerEmail: "lahari@gmail.com",
+	}
+
+	reqBody, err := json.Marshal(mock_service_book)
+	if err != nil {
+		a.Error(err)
+	}
+	end_url := "/:" + strconv.Itoa(int(mock_service_book.ServiceId)) + "/book"
+
+	req, w, err := setServiceBookRouter(db, end_url, bytes.NewBuffer(reqBody))
 
 	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
+	// Only when header is sent
 	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
 
 	body, err := ioutil.ReadAll(w.Body)
@@ -391,16 +410,17 @@ func TestServiceBookAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	expected := m.Booking{}
+	expected := mock_service_book
 	a.Equal(expected, actual)
 }
 
-func setServiceBookRouter(db *gorm.DB, url string) (*http.Request, *httptest.ResponseRecorder, error) {
+func setServiceBookRouter(db *gorm.DB, url string, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
 	r.POST("/services"+url, s.Book(db))
 
-	req, err := http.NewRequest(http.MethodPost, "/services"+url, nil)
+	req, err := http.NewRequest(http.MethodPost, "/services"+url, body)
+	req.Header.Set("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxhaGFyaUBnbWFpbC5jb20iLCJleHAiOjE2NDg5NTEzMDl9.8CCPJsoviPFjvp2ORrzKX1Hfl-PzUo0HzrBt0j6tcXM")
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}

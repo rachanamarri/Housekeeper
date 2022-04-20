@@ -8,14 +8,14 @@ import { AuthService } from '../ngservices/auth.service';
 })
 export class RegisterComponent implements OnInit {
   form: any = {
-    username: null,
+    name: null,
     email: null,
     password: null
   };
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
-  
+  isProvider = true;
 
   constructor(private authService: AuthService) { 
     
@@ -23,9 +23,13 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
   }
+   
 
-  onSubmit(): void {
+  test1() {
+    console.log("entered here");
     const { username, email, password, address } = this.form;
+    this.isProvider= true;
+    //this.onSubmit();
     this.authService.register(username, email, password, address).subscribe({
       next: data => {
         console.log(data);
@@ -39,4 +43,22 @@ export class RegisterComponent implements OnInit {
     });
   }
 
+  test2() {
+    console.log("entered here");
+    const { username, email, password, address } = this.form;
+    this.isProvider= false;
+    //this.onSubmit();
+    this.authService.registerAsProvider(username, email, password, address).subscribe({
+      next: data => {
+        console.log(data);
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
+      },
+      error: err => {
+        this.errorMessage = err.error.message;
+        this.isSignUpFailed = true;
+      }
+    });
+  }
+  
 }

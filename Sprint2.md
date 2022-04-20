@@ -14,7 +14,7 @@
 2. Used Cypress Testing
 
 3. Run Unit Tests Angular
-=======
+
 
 ## FrontEnd Development
 **1. created and implemented cypress test case for landing page.**

@@ -16,10 +16,10 @@ func responseWithError(c *gin.Context, code int, message interface{}) {
 func Authenticate(requiredToken string) (string, error) {
 
 	// Get email from encoded token
-	splitToken := strings.Split(requiredToken, "Bearer ")
+	splitToken := strings.Split(requiredToken, "bearer ")
+	// fmt.Println("Splitoken", splitToken)
 	reqToken := splitToken[1]
 
 	userID, err := services.DecodeToken(reqToken)
 	return userID, err
-
 }

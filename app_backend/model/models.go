@@ -8,6 +8,7 @@ type Seeker struct {
 
 	Name     string `json:"Name"`
 	Email    string `json:"Email"`
+
 	Password string `json:"password"`
 	Address  string `json:"address"`
 
@@ -29,6 +30,32 @@ type ServiceAndProvider struct {
 	ServicePrice       int64  `json:"ServicePrice"`
 	ServiceDescription string `json:"ServiceDescription"`
 
+=======
+	Password string `json:"Password"`
+	Address  string `json:"Address"`
+}
+
+type Login struct {
+	Email    string `json:"Email"`
+	Password string `json:"Password"`
+}
+
+type Provider struct {
+	ProviderId  int64  `json:"ProviderId"`
+	Name        string `json:"Name"`
+	Email       string `json:"Email"`
+	Password    string `json:"Password"`
+	Address     string `json:"Address"`
+	PhoneNumber string `json:"PhoneNumber"`
+}
+
+type Service struct {
+	ServiceId   int64  `json:"ServiceId"`
+	ProviderId  int64  `json:"ProviderId"`
+	Name        string `json:"Name"`
+	Price       int64  `json:"Price"`
+	Description string `json:"Description"`
+
 }
 
 type Booking struct {
@@ -47,10 +74,6 @@ type Ratings struct {
 
 	ServiceID     int64  `json:"ServiceId"`
 	ProviderEmail string `json:"ProviderEmail"`
-	Rating        int64  `json:"rating"`
-
-}
-
 
 
 
