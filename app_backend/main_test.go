@@ -25,6 +25,7 @@ type APIEnv struct {
 
 type ConsolePrinter struct{}
 
+//utility function
 func (cp *ConsolePrinter) Print(value string) {
 	fmt.Printf("this is value: %s", value)
 }
