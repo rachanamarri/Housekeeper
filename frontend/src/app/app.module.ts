@@ -15,6 +15,10 @@ import { RegisterComponent } from './register/register.component';
 import { ProviderBoardComponent } from './provider-board/provider-board.component';
 import { FooterComponent } from './footer/footer.component';
 import { SharedService } from './ngservices/shared-service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 const routes: Routes = [
@@ -44,6 +48,10 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     FormsModule,
     HttpClientModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    MatFormFieldModule
     
     
   ],
