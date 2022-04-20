@@ -9,8 +9,9 @@
       novalidate
     >
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username">Email</label>
         <input
+          id="loginEmail"
           type="text"
           class="form-control"
           name="username"[(ngModel)]="form.username"
@@ -28,6 +29,7 @@
       <div class="form-group">
         <label for="password">Password</label>
         <input
+          id="loginpswrd"
           type="password"
           class="form-control"
           name="password"
@@ -47,7 +49,7 @@
       </div>
     </div>
     <div class="form-group">
-      <button class="btn btn-primary btn-block" (click)="test1()">
+      <button id= "loginAsSeeker" class="btn btn-primary btn-block" (click)="test1()">
         Login as service seeker
       </button>
     </div>

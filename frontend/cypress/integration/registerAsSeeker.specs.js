@@ -6,7 +6,7 @@ describe("Register test", () => {
       cy.get("#registerEmail").type("TestUser@test.com");
       cy.get("#registerPswd").type("password");
       cy.get("#registerAddress").type("adress is this");
-      cy.get("#registerSubmit").click();
+      cy.get("#registerAsSeeker").click();
       
     });
   });
