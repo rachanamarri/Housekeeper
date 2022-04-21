@@ -125,14 +125,20 @@ To run the unit test, following command is to be used -
 2. CreateRatingsAPI - To test posting ratings for a service by the user
 
 
-
 ## Video to demonstrate HOUSEKEEPER functionality
 https://www.youtube.com/watch?v=vT3bdijZuNc
 
 ## Video to demonstrate Cypress-Tests on the Frontend
+- cypress test to login:
+- https://youtu.be/jOmd3ZZmMPc
+- cypress test to register:
+- https://youtu.be/JNo8rSxO9Zg
+- https://youtu.be/OT-BKOpcpFs
 
 ## Video to demonstrate Unit-Tests on the Backend
 
+## BONUS
+- Deployed App Url: [https://lbarad.github.io/Housekeeper/](https://lbarad.github.io/Housekeeper/)
 #### [API Documentation]()
 
 #### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
