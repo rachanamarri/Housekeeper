@@ -17,7 +17,26 @@
 ## Backend Development
 
 
+## Video to demonstrate HOUSEKEEPER functionality
+![UI Demo](https://youtu.be/vT3bdijZuNc)
 
+## Video to demonstrate Cypress-Tests on the Frontend
+
+## Video to demonstrate Unit-Tests on the Backend
+
+#### [API Documentation]()
+
+#### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
+
+#### [Sprint-4 Deliverables](https://github.com/mitali3112/Housekeeper/blob/main/Sprint4.md)
+
+## Team Members
+### Frontend
+1. Rachana Reddy Marri
+2. Yasaswini Valisetty
+### Backend
+1. Nitheesha Reddy Beereddy
+2. Mitali Sheth
 
 
 
