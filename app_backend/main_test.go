@@ -87,7 +87,7 @@ func setCreateSeekerRouter(db *gorm.DB, body *bytes.Buffer) (*http.Request, *htt
 
 }
 
-func TestCreateServiceAPI(t *testing.T) {
+func TestCreateProviderAPI(t *testing.T) {
 
 	a := assert.New(t)
 
@@ -99,8 +99,9 @@ func TestCreateServiceAPI(t *testing.T) {
 
 	mock_provider := m.Provider{
 		Name:     "Spa",
-		Email:    "spa@lakme.com",
-		Password: "lakmepassword",
+		Email:    "",
+		Password: "",
+		Address:  "",
 	}
 
 	reqBody, err := json.Marshal(mock_provider)
@@ -108,7 +109,7 @@ func TestCreateServiceAPI(t *testing.T) {
 		a.Error(err)
 	}
 
-	req, w, err := setCreateServiceRouter(db, bytes.NewBuffer(reqBody))
+	req, w, err := setCreateProviderRouter(db, bytes.NewBuffer(reqBody))
 
 	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
 	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
@@ -127,12 +128,12 @@ func TestCreateServiceAPI(t *testing.T) {
 	a.Equal(expected, actual)
 }
 
-func setCreateServiceRouter(db *gorm.DB, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
+func setCreateProviderRouter(db *gorm.DB, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.POST("/service_registration", s.Create_service(db))
+	r.POST("/provider_registration", s.Create_service(db))
 
-	req, err := http.NewRequest(http.MethodPost, "/service_registration", body)
+	req, err := http.NewRequest(http.MethodPost, "/provider_registration", body)
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}
@@ -382,10 +383,9 @@ func TestServiceBookAPI(t *testing.T) {
 	defer db.Close()
 
 	mock_service_book := m.Booking{
-
-		ServiceId:   66,
-		SeekerName:  "Lahari",
-		SeekerEmail: "lahari@gmail.com",
+		ProviderId: 0,
+		ServiceId:  1,
+		SeekerName: "Lahari",
 	}
 
 	reqBody, err := json.Marshal(mock_service_book)
@@ -396,9 +396,7 @@ func TestServiceBookAPI(t *testing.T) {
 
 	req, w, err := setServiceBookRouter(db, end_url, bytes.NewBuffer(reqBody))
 
-	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
-	// Only when header is sent
-	a.Equal(http.StatusOK, w.Code, "HTTP request status code error")
+	a.Equal(http.MethodGet, req.Method, "HTTP request method error")
 
 	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
@@ -411,16 +409,75 @@ func TestServiceBookAPI(t *testing.T) {
 	}
 
 	expected := mock_service_book
+	expected.SeekerName = ""
+	expected.ServiceId = 0
 	a.Equal(expected, actual)
 }
 
 func setServiceBookRouter(db *gorm.DB, url string, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
 	r := gin.New()
 
-	r.POST("/services"+url, s.Book(db))
+	r.GET("/services"+url, s.Book(db))
+
+	req, err := http.NewRequest(http.MethodGet, "/services"+url, body)
+	req.Header.Set("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxhaGFyaUBnbWFpbC5jb20iLCJleHAiOjE2NDg5NTEzMDl9.8CCPJsoviPFjvp2ORrzKX1Hfl-PzUo0HzrBt0j6tcXM")
+	if err != nil {
+		return req, httptest.NewRecorder(), err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return req, w, nil
+
+}
+
+func TestServiceRateAPI(t *testing.T) {
+
+	a := assert.New(t)
+
+	db, err := gorm.Open("sqlite3", "./dbase.db")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	mock_service_rate := m.Ratings{
+		Rating: 4,
+	}
+
+	reqBody, err := json.Marshal(mock_service_rate)
+	if err != nil {
+		a.Error(err)
+	}
+	end_url := "/:" + strconv.Itoa(int(mock_service_rate.ServiceID)) + "/rate_service"
+
+	req, w, err := setServiceRateRouter(db, end_url, bytes.NewBuffer(reqBody))
+
+	a.Equal(http.MethodPost, req.Method, "HTTP request method error")
+
+	body, err := ioutil.ReadAll(w.Body)
+	if err != nil {
+		a.Error(err)
+	}
+
+	actual := m.Ratings{}
+	if err := json.Unmarshal(body, &actual); err != nil {
+		a.Error(err)
+	}
+	actual.ServiceID = 0
+	actual.ServiceName = ""
+	expected := mock_service_rate
+
+	a.Equal(expected, actual)
+}
+
+func setServiceRateRouter(db *gorm.DB, url string, body *bytes.Buffer) (*http.Request, *httptest.ResponseRecorder, error) {
+	r := gin.New()
+
+	r.POST("/services"+url, s.Rate(db))
 
 	req, err := http.NewRequest(http.MethodPost, "/services"+url, body)
-	req.Header.Set("Authorization", "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxhaGFyaUBnbWFpbC5jb20iLCJleHAiOjE2NDg5NTEzMDl9.8CCPJsoviPFjvp2ORrzKX1Hfl-PzUo0HzrBt0j6tcXM")
 	if err != nil {
 		return req, httptest.NewRecorder(), err
 	}
