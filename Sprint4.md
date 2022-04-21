@@ -5,6 +5,24 @@
 
 <h3>Sprint Window: 1 April 2022 - 20 April 2022</h3>
 
+## WEB-APP Description
+
+Housekeeper is a platform that connects the consumers with the service providers. With this the users will be able to search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online. 
+
+#### Service Seeker: 
+- Access to homepage and services
+- Access to description, ratings and details of every provider
+- Filter services based on type, budget and package
+- Can select suitable date and time for the appointment
+- Await confirmation of appointment from the provider
+- Can pay using online payment services
+- Post reviews and ratings after the service is delivered
+
+#### Guest Seeker (Login not necessary):
+- Access to homepage and services
+- Access to description, ratings and details of every provider
+- Filter services based on type, budget and package
+
 ## Frontend Development
 - Added an about us Page to contact in case a user cannot book an appointment
 - Created cypress test to register as seeker.
