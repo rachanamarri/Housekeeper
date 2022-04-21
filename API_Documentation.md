@@ -15,20 +15,44 @@ POST /seeker_registration
 }
 ```
 
-**2. Create Provider POST API**
-This API creates a provider (service provider) with service details
+##### Example Responses:
 
 ```
-POST /service_registration
+{
+    "Name":"Bob", 
+    "Email":"Bob@gmail.com",
+    "Password":"",
+    "Address":"3800 SW 34th ST. GNV FL 32608"
+}
+```
+
+**2. Create Provider POST API**
+This API creates a provider (service provider) with provider details
+
+```
+POST /provider_registration
 ```
 **Example Request Body**
 ```
-{  
-    "ServiceName":"SPA Treatment",
-    "ProviderEmail":"spa@lakme.com", 
-    "ProviderPassword":"random_password", 
-    "ServicePrice":500,
-    "ServiceDescription":"Leave the world behind & slip into a deep state of wellness & relaxation with massage, facials, nails & more."
+{   
+    "ProviderId" : 0
+    "Name":"SPA Treatment",
+    "Email":"spa@lakme.com", 
+    "Password":"random_password", 
+    "Description":"Leave the world behind & slip into a deep state of wellness & relaxation with massage, facials, nails & more.",
+    "Address":"400 SW 38th Street"
+}
+```
+##### Example Responses:
+
+```
+{   
+    "ProviderId" : 0
+    "Name":"SPA Treatment",
+    "Email":"spa@lakme.com", 
+    "Password":"", 
+    "Description":"Leave the world behind & slip into a deep state of wellness & relaxation with massage, facials, nails & more.",
+    "Address":"400 SW 38th Street"
 }
 ```
 
@@ -45,6 +69,14 @@ POST /seeker_login
     "Password":"random_password",
 }
 ```
+##### Example Responses:
+
+```
+{
+    "message": "Log in success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pdGFsaTMxMTJAZ21haWwuY29tIiwiZXhwIjoxNjUwNTkzMjkzfQ.mfQsZ0WRCg6mlo5Lbmp1DcPZDIO7NokJ6_qaVreZmbw"
+}
+```
 
 **4. Provider Login POST API**
 This API checks login authentication of a service provider
@@ -59,66 +91,160 @@ POST /provider_login
     "Password":"random_password",
 }
 ```
+##### Example Responses:
 
-**5. List Services GET API**
+```
+{
+    "message": "Log in success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pdGFsaTMxMTJAZ21haWwuY29tIiwiZXhwIjoxNjUwNTkzMjkzfQ.mfQsZ0WRCg6mlo5Lbmp1DcPZDIO7NokJ6_qaVreZmbw"
+}
+```
+
+**5. List Providers GET API**
 This API list all the services present in the database
 
 ```
-GET /services
+GET /providers
 ```
 **Example Response**
 ```
 [
     {
-        "ServiceId": 0,
-        "ServiceName":"SPA Treatment",
-        "ProviderEmail":"spa@lakme.com", 
-        "ProviderPassword":"random_password", 
-        "ServicePrice":500,
-        "ServiceDescription":"Leave the world behind & slip into a deep state of wellness & relaxation with massage, facials, nails & more."
+        "ProviderId": 0,
+        "Name": "Electrician",
+        "Email": "electrician@onestop.com",
+        "Password": "",
+        "Address": "400 SW 38th Street"
     },
     {
-        "ServiceId": 1,
-        "ServiceName": "Technician",
-        "ProviderEmail": "support@quickfix.com",
-        "ProviderPassword": "random_password",
-        "ServicePrice": 500,
-        "ServiceDescription": "Fix all gadgets of any kind without warranty and in 72 hours"
-    },
+        "ProviderId": 0,
+        "Name": "Lakme Beauty Services",
+        "Email": "beauty@lakme.com",
+        "Password": "",
+        "Address": "400 SW 38th Street"
+    }
 ]
 ```
-**6. List Specific Service Details GET API**
+**6. Specific Service Details GET API**
 This API lists a particular service with details present in the database
 
 ```
-GET /services/:id
+GET /services/:id/list
 ```
 **Example Response**
 ```
 {
-    "ServiceId": 0,
-    "ServiceName":"SPA Treatment",
-    "ProviderEmail":"spa@lakme.com", 
-    "ProviderPassword":"random_password", 
-    "ServicePrice":500,
-    "ServiceDescription":"Leave the world behind & slip into a deep state of wellness & relaxation with massage, facials, nails & more."
+    "ServiceId": 3,
+    "ProviderId": 1,
+    "Name": "Fix Sockets",
+    "Price": 50,
+    "Description": "Fix any wall socket in your house"
 }
 ```
-**7. Book Service POST API**
+**7. Book Service GET API**
 This API books a service for the user
 
 ```
-POST /services/:id/book
+GET /services/:id/book
+```
+
+##### Header:
+
+    Authorization: Access token
+
+**Example Request Body**
+```
+{   
+    "ServiceId": 1, 
+    "SeekerName":"Sheth", 
+    "SeekerEmail": "mitali123@gmail.com" 
+}
+```
+**Example Response**
+```
+{
+    "ServiceId": 1,
+    "ProviderId": 1,
+    "Name": "Fix Sockets",
+    "Price": 50,
+    "Description": "Fix any wall socket in your house"
+}
+
+```
+
+**8. Rate Service POST API**
+This API rate a service for the user
+
+```
+POST /services/:id/rate_service
+```
+##### Header:
+
+    Authorization: Access token
+    
+**Example Request Body**
+```
+{
+    "Rating": 4
+}
+```
+**Example Response**
+```
+{
+    "ServiceId": 1,
+    "ServiceName": "Fix a bulb",
+    "Rating": 4
+}
+
+```
+
+**9. Create Service POST API**
+This API creates a service for the user
+
+```
+POST /service_registration
 ```
 **Example Request Body**
 ```
 {
-    "ServiceId": 0,
-    "SeekerName": "Amy Santiago",
-    "SeekerEmail": "amy@brooklyn99.com"
+    "ServiceId": 0, 
+    "ProviderId": 1, 
+    "Name":"Fix Sockets", 
+    "Price" : 50, 
+    "Description":"Fix any wall socket in your house"
 }
 ```
+**Example Response**
+```
+{
+    "ServiceId": 1,
+    "ProviderId": 1,
+    "Name": "Fix Sockets",
+    "Price": 50,
+    "Description": "Fix any wall socket in your house"
+}
 
+```
+
+**10.Create Email GET API**
+This API creates a service for the user
+
+```
+GET /services/:SeekerName/emailservice
+```
+##### Header:
+
+    Authorization: Access token
+    
+
+**Example Response**
+```
+{
+    "message": "Email sent",
+    "result": true
+}
+
+```
 
 **Status Codes**
 - 200: Status OK
