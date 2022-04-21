@@ -25,11 +25,21 @@ Backend: Golang
 Database: SQlite
 
 ## Video to demonstrate HOUSEKEEPER functionality
+https://www.youtube.com/watch?v=vT3bdijZuNc
 
 ## Video to demonstrate Cypress-Tests on the Frontend
+- cypress test to login:
+- https://youtu.be/jOmd3ZZmMPc
+- cypress test to register:
+- https://youtu.be/JNo8rSxO9Zg
+- https://youtu.be/OT-BKOpcpFs
 
 ## Video to demonstrate Unit-Tests on the Backend
+-Backend Test Url: https://drive.google.com/file/d/1w2tMSIHK7cEtsrAsqbf2iJhrw6NMgM4U/view?usp=sharing
 
+## BONUS
+- Deployed App Url: [https://lbarad.github.io/Housekeeper/](https://lbarad.github.io/Housekeeper/)
+- 
 #### [API Documentation](https://github.com/mitali3112/Housekeeper/blob/main/API_Documentation.md)
 
 #### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
