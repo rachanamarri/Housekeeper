@@ -1,4 +1,4 @@
-describe("Register test", () => {
+describe("Register as Provider test", () => {
     it("should register a user", () => {
       cy.visit("http://localhost:4200/register");
 
@@ -6,7 +6,7 @@ describe("Register test", () => {
       cy.get("#registerEmail").type("TestUser@test.com");
       cy.get("#registerPswd").type("password");
       cy.get("#registerAddress").type("adress is this");
-      cy.get("#registerSubmit").click();
+      cy.get("#registerAsProvider").click();
       
     });
   });

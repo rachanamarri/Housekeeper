@@ -60,43 +60,5 @@ export class RegisterComponent implements OnInit {
       }
     });
   }
-
-
-  // onSubmit(): void {
-  //   debugger;
-  //   const { username, email, password, address } = this.form;
-    
-
-
-  //   if(this.isProvider==false) {
-  //     // hit api
-  //     this.authService.register(username, email, password, address).subscribe({
-  //       next: data => {
-  //         console.log(data);
-  //         this.isSuccessful = true;
-  //         this.isSignUpFailed = false;
-  //       },
-  //       error: err => {
-  //         this.errorMessage = err.error.message;
-  //         this.isSignUpFailed = true;
-  //       }
-  //     });
-  //   }  
-    
-  //   else {
-  //     this.authService.registerAsProvider(username, email, password, address).subscribe({
-  //       next: data => {
-  //         console.log(data);
-  //         this.isSuccessful = true;
-  //         this.isSignUpFailed = false;
-  //       },
-  //       error: err => {
-  //         this.errorMessage = err.error.message;
-  //         this.isSignUpFailed = true;
-  //       }
-  //     });
-  //   }
-    
-  // }
   
 }
