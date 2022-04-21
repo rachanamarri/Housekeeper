@@ -16,6 +16,115 @@
 
 ## Backend Development
 
+#### 1. Create Service API
+
+This API is used for creating a new service.
+
+```
+POST  /service_registration
+```
+
+#####  Example Request Body:
+
+```
+{
+    "ServiceId": 0, 
+    "ProviderId": 1, 
+    "Name":"Fix Sockets", 
+    "Price" : 50,
+    "Description":"Fix any wall socket in your house"
+}
+
+```
+
+##### Example Responses:
+
+```
+{
+    "ServiceId": 24,
+    "ProviderId": 1,
+    "Name": "Fix Sockets",
+    "Price": 50,
+    "Description": "Fix any wall socket in your house"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 2. Post Ratings API
+
+This API is used to give ratings on any service.
+
+```
+POST  /services/:ServiceId/rate_service
+```
+#####  Example Request Body:
+
+```
+{
+    "Rating": 4
+}
+```
+##### Example Responses:
+
+```
+{
+    "ServiceId": 1,
+    "ServiceName": "Fix a bulb",
+    "Rating": 4
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 3.Create Email GET API
+
+This API creates a service for the user
+
+```
+GET /services/:SeekerName/emailservice
+```
+##### Header:
+
+    Authorization: Access token
+    
+
+**Example Response**
+```
+{
+    "message": "Email sent",
+    "result": true
+}
+
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+## Back-end tests
+
+To run the unit test, following command is to be used -
+
+    go test -v
+
+1. CreateServiceAPI - To test creating a new service by the provider/admin
+2. CreateRatingsAPI - To test posting ratings for a service by the user
+
+
 
 ## Video to demonstrate HOUSEKEEPER functionality
 https://www.youtube.com/watch?v=vT3bdijZuNc
