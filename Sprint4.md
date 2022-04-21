@@ -143,20 +143,19 @@ To run the unit test, following command is to be used -
 
 
 ## Video to demonstrate HOUSEKEEPER functionality
-https://www.youtube.com/watch?v=vT3bdijZuNc
+[![Housekeeper](https://img.youtube.com/vi/vT3bdijZuNc/3.jpg)](https://www.youtube.com/watch?v=vT3bdijZuNc)
 
 ## Video to demonstrate Cypress-Tests on the Frontend
-- cypress test to login:
-- https://youtu.be/jOmd3ZZmMPc
-- cypress test to register:
-- https://youtu.be/JNo8rSxO9Zg
-- https://youtu.be/OT-BKOpcpFs
+- [![cypress test to login:](https://img.youtube.com/vi/jOmd3ZZmMPc/0.jpg)](https://www.youtube.com/watch?v=jOmd3ZZmMPc)
+- [![cypress test to register:](https://img.youtube.com/vi/JNo8rSxO9Zg/0.jpg)](https://www.youtube.com/watch?v=JNo8rSxO9Zg)
+- [![cypress test to register:](https://img.youtube.com/vi/OT-BKOpcpFs/0.jpg)](https://www.youtube.com/watch?v=OT-BKOpcpFs)
+## Video to demonstrate backend unit test
+[![Unit-Tests on the Backend](https://img.youtube.com/vi/1mwtkdjyOXI/0.jpg)](https://www.youtube.com/watch?v=1mwtkdjyOXI)
 
-## Video to demonstrate Unit-Tests on the Backend
--Backend Test Url: https://drive.google.com/file/d/1w2tMSIHK7cEtsrAsqbf2iJhrw6NMgM4U/view?usp=sharing
 
 ## BONUS
 - Deployed App Url: [https://lbarad.github.io/Housekeeper/](https://lbarad.github.io/Housekeeper/)
+
 #### [API Documentation](https://github.com/mitali3112/Housekeeper/blob/main/API_Documentation.md)
 
 #### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
