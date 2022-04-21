@@ -150,7 +150,7 @@ func Listing_providers(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
 		var providers []m.Provider
-		if err := db.Find(&providers).Error; err != nil {
+		if err := db.Select([]string{"Name", "Email", "Address"}).Find(&providers).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
@@ -165,10 +165,11 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
 		id := c.Params.ByName("ProviderId")
-		fmt.Println(id)
-		var service m.Provider
+		pid, _ := strconv.ParseInt(id, 10, 64)
+		fmt.Println(pid)
+		var service m.Service
 
-		if err := db.First(&service, "ProviderId = ?", id).Error; err != nil {
+		if err := db.Where(&m.Service{ProviderId: pid}).Find(&service).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println(err)
 		} else {
@@ -183,7 +184,8 @@ func List_service(db *gorm.DB) gin.HandlerFunc {
 func Book(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		requiredToken := c.Request.Header["Authorization"]
-
+		id := c.Param("ProviderId")
+		// fmt.Println("Now", id)
 		// Check if the token is provided
 		print(len(requiredToken))
 		if len(requiredToken) == 0 {
@@ -204,7 +206,8 @@ func Book(db *gorm.DB) gin.HandlerFunc {
 		var booking m.Booking
 
 		c.BindJSON(&booking)
-
+		booking.ProviderId, err = strconv.ParseInt(id, 10, 64)
+		// fmt.Println("Here", booking.ProviderId)
 		db.Create(&booking)
 
 		c.JSON(200, booking)
@@ -280,19 +283,19 @@ func Rate(db *gorm.DB) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
 		var rate m.Ratings
-		var service m.Provider
+		var service m.Service
+
+		c.BindJSON(&rate)
 
 		id, _ := strconv.ParseInt(c.Params.ByName("ServiceId"), 10, 64)
 		rate.ServiceID = id
 
-		if err := db.First(&service, "ServiceId = ?", id).Error; err != nil {
+		if err := db.Where(&m.Service{ServiceId: id}).First(&service).Error; err != nil {
 			c.AbortWithStatus(404)
 			fmt.Println("the provider does not exist")
 		} else {
-			rate.ProviderEmail = service.Email
+			rate.ServiceName = service.Name
 		}
-
-		rate.Rating, _ = strconv.ParseInt(c.Params.ByName("rating"), 10, 64)
 
 		db.Create(&rate)
 
