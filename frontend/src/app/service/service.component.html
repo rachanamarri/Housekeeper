@@ -1,0 +1,36 @@
+<div class="container">
+    
+    <div>
+        <h1><u>{{test?.name}}</u></h1><br><br><br>
+        <h3>{{test?.description}}</h3><br><br>
+        <button type="button" style="background-color: #DE5D83;color: beige; border-radius: 50%;"><h3>Price : $ {{test?.price}}</h3></button>&nbsp;&nbsp;&nbsp;&nbsp;
+   
+        <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker ></mat-datepicker>
+        </mat-form-field>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <mat-form-field appearance="fill">
+            <mat-label>Time slots</mat-label>
+            <select matNativeControl required>
+              <option value="9am">9:00-10:00 AM</option>
+              <option value="10am">10:00-11:00 AM</option>
+              <option value="11am">11:00-12:00 AM</option>
+              <option value="12am">12:00-1:00 PM</option>
+              <option value="1pm">1:00-2:00 PM</option>
+              <option value="2pm">2:00-3:00 PM</option>
+              <option value="3pm">3:00-4:00 PM</option>
+              <option value="4pm">4:00-5:00 PM</option>
+              <option value="5pm">5:00-6:00 PM</option>
+              <option value="6pm">6:00-7:00 PM</option>
+              
+            </select>
+          </mat-form-field> &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+        <button type="button" style="background-color:black;color: beige; border-radius: 6px;" (click)="getAppointment()"><h2>Book an Appointment </h2></button>
+    </div>
+
+
+</div>

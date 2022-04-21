@@ -1,0 +1,35 @@
+.navbar{
+    justify-content: space-between;
+    color:#DE5D83;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}    
+
+span {
+    padding-right: 1rem;
+    font-size:medium;
+}
+
+.container {
+    display:flex;
+    background-color:#DE5D83;
+    padding: 50px;
+    color:azure;
+    
+}
+
+.flex1{
+    justify-content: space-around;
+    padding:20px
+}
+
+.container1 {
+    display:flex;
+    padding: 30px;
+    
+}
+
+img {
+    width: 270px;
+    height: 220px
+  }

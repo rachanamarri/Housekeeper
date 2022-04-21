@@ -1,0 +1,103 @@
+<div class="col-md-12">
+  <div class="card card-container">
+    <!-- (ngSubmit)="f.form.valid && onSubmit()" -->
+    <form
+      *ngIf="!isSuccessful"
+      name="form"
+      
+      #f="ngForm"
+      novalidate
+    >
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+        id="registerUName"
+        type="text"
+        class="form-control"
+        name="username"
+        [(ngModel)]="form.username"
+        required
+        minlength="3"
+        maxlength="20"
+        #username="ngModel"
+      />
+      <div class="alert-danger" *ngIf="username.errors && f.submitted">
+        <div *ngIf="username.errors['required']">Username is required</div>
+        <div *ngIf="username.errors['minlength']">
+          Username must be at least 3 characters
+        </div>
+        <div *ngIf="username.errors['maxlength']">
+          Username must be at most 20 characters
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+      id="registerEmail"
+      type="email"
+      class="form-control"
+      name="email"
+      [(ngModel)]="form.email"
+      required
+      email
+      #email="ngModel"
+    />
+    <div class="alert-danger" *ngIf="email.errors && f.submitted">
+      <div *ngIf="email.errors['required']">Email is required</div>
+      <div *ngIf="email.errors['email']">
+        Email must be a valid email address
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input
+    id="registerPswd"
+      type="password"
+      class="form-control"
+      name="password"
+      [(ngModel)]="form.password"
+      requiredminlength="6"
+      #password="ngModel"
+    />
+    <div class="alert-danger" *ngIf="password.errors && f.submitted">
+      <div *ngIf="password.errors['required']">Password is required</div>
+      <div *ngIf="password.errors['minlength']">
+        Password must be at least 6 characters
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+      <label for="address">Address</label>
+      <input
+      type="text"
+      id="registerAddress"
+      class="form-control"
+      name="address"
+      [(ngModel)]="form.address"
+      required
+      #address="ngModel"
+    />
+    <div class="alert-danger" *ngIf="address.errors && f.submitted">
+      <div *ngIf="address.errors['required']">Address is required</div>
+    </div>
+  </div>
+  <div class="form-group">
+    
+    <button id="registerAsSeeker"class="btn btn-primary btn-block" (click)="test1()">Sign Up as service seeker</button>
+  </div>
+  <div class="form-group">
+    
+    <button id="registerAsProvider" class="btn btn-primary btn-block" (click)="test2()">Sign Up as service provider</button>
+  </div>
+  <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
+    Signup failed!<br />{{ errorMessage }}
+  </div>
+  
+</form>
+<div class="alert alert-success" *ngIf="isSuccessful">
+  Your registration is successful!
+</div>
+</div>
+</div>
