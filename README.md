@@ -17,12 +17,7 @@ Housekeeper is a platform that connects the consumers with the service providers
 - Access to homepage and services
 - Access to description, ratings and details of every provider
 - Filter services based on type, budget and package
-
-#### Administrator:
-- Global access to the application
-- Handles service price plans management
-- Records appointments for both seekers and providers
-- Handles notification settings 
+ 
 
 ### Technical Stack
 Frontend: Angular 2+
