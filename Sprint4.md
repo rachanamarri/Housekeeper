@@ -157,7 +157,7 @@ https://www.youtube.com/watch?v=vT3bdijZuNc
 
 ## BONUS
 - Deployed App Url: [https://lbarad.github.io/Housekeeper/](https://lbarad.github.io/Housekeeper/)
-#### [API Documentation]()
+#### [API Documentation](https://github.com/mitali3112/Housekeeper/blob/main/API_Documentation.md)
 
 #### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
 
