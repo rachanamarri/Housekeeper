@@ -22,6 +22,7 @@ Housekeeper is a platform that connects the consumers with the service providers
 - Filter services based on type, budget and package
 
 ## Frontend Development
+- Deployed Frontend using github pages. Attached link to the bonus part.
 - Added an about us Page to contact in case a user cannot book an appointment
 - Created cypress test to register as seeker.
 - Created cypress test to register as provider.
