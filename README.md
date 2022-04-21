@@ -37,7 +37,6 @@ https://www.youtube.com/watch?v=vT3bdijZuNc
 ## Video to demonstrate backend unit test
 [![Unit-Tests on the Backend](https://img.youtube.com/vi/1mwtkdjyOXI/0.jpg)](https://www.youtube.com/watch?v=1mwtkdjyOXI)
 
--Backend Test Url: https://drive.google.com/file/d/1w2tMSIHK7cEtsrAsqbf2iJhrw6NMgM4U/view?usp=sharing
 
 ## BONUS
 - Deployed App Url: [https://lbarad.github.io/Housekeeper/](https://lbarad.github.io/Housekeeper/)
