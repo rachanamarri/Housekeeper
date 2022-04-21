@@ -18,7 +18,7 @@
 
 
 ## Video to demonstrate HOUSEKEEPER functionality
-![UI Demo](https://youtu.be/vT3bdijZuNc)
+https://www.youtube.com/watch?v=vT3bdijZuNc
 
 ## Video to demonstrate Cypress-Tests on the Frontend
 
