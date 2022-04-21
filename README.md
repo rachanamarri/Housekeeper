@@ -30,7 +30,7 @@ Database: SQlite
 
 ## Video to demonstrate Unit-Tests on the Backend
 
-#### [API Documentation]()
+#### [API Documentation](https://github.com/mitali3112/Housekeeper/blob/main/API_Documentation.md)
 
 #### [Project Board](https://github.com/mitali3112/Housekeeper/projects)
 
