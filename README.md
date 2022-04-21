@@ -4,15 +4,7 @@
 
 ## WEB-APP Description
 
-Housekeeper is a platform that connects the consumers with the service providers. With this the users will be able to search the services that include salon, cleaners, carpenters, plumbers, technicians, etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online. 
-
-### User Roles with Respective Functionality
-#### Service Provider:
-- Access to platform with profile for services listed
-- Can provide their availability for appointments
-- Notified on seeker service request, and after analyzing their work commitments can accept or reject the appointment
-- Can cancel/reschedule appointment only in case of emergency
-- Can make requests to admin for changes in profile or price plan
+Housekeeper is a platform that connects the consumers with the service providers. With this the users will be able to search the services that include salon services such as facial services, Massages, manicure and pedicure etc. It’s the best way that a small buiness can reach the seekers through popular applications and connect with the local audience by showing their services online. 
 
 #### Service Seeker: 
 - Access to homepage and services
@@ -20,8 +12,6 @@ Housekeeper is a platform that connects the consumers with the service providers
 - Filter services based on type, budget and package
 - Can select suitable date and time for the appointment
 - Await confirmation of appointment from the provider
-- Can pay using online payment services
-- Post reviews and ratings after the service is delivered
 
 #### Guest Seeker (Login not necessary):
 - Access to homepage and services
